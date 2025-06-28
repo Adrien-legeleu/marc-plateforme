@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
@@ -13,13 +7,42 @@ generator client {
   provider = "prisma-client-js"
 }
 
-model Candidate {
-  id        String   @id @default(cuid())
-  type      String   // "player" | "coach"
-  name      String
-  email     String
-  cvUrl     String
-  premium   Boolean  @default(false)
-  createdAt DateTime @default(now())
+model Joueur {
+  id             Int      @id @default(autoincrement())
+  name           String
+  firstName      String
+  bornDate       DateTime
+  email          String
+  telephone      String?
+  position       String[]    
+  strongFoot     String?       
+  height         Int?          
+  weight         Int?          
+  nationalities  String[]     
+  lastClub       String?
+  currentLevel   String?
+  educationLevel String?
+  mobility       String?       
+  cvUrls         String[]      
+  photoUrls      String[]     
+  videoUrls      String[]      
+  premium        Boolean       @default(false)
+  createdAt      DateTime      @default(now())
 }
 
+model Entraineur {
+  id             Int      @id @default(autoincrement())
+  name           String
+  firstName      String
+  email          String
+  telephone      String?
+  diplomas       String[]     
+  experience     String?      
+  pastClubs      String[]      
+  targetAudience String[]     
+  projectType    String?       
+  cvUrls         String[]      
+  photoUrl       String?      
+  socialLinks    String[]     
+  createdAt      DateTime      @default(now())
+}

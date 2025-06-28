@@ -1,15 +1,14 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
+import { Header } from '@/components/header/Header';
+import { Antonio } from 'next/font/google';
+import { Toaster } from '@/components/ui/sonner';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+export const antonio = Antonio({
   subsets: ['latin'],
-});
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
+  variable: '--font-title',
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
@@ -24,10 +23,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      <body className={`${antonio.variable} antialiased`}>
+        <header>
+          <Header />
+        </header>
+        <main>{children}</main>
+        <Toaster />
       </body>
     </html>
   );
