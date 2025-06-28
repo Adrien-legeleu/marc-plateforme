@@ -36,7 +36,7 @@ export default function Page() {
     videoUrls: [] as string[],
   });
 
-  const maxSizeMB = 100;
+  const maxSizeMB = 50;
   const maxSize = maxSizeMB * 1024 * 1024;
   const maxFiles = 6;
 
@@ -109,7 +109,7 @@ export default function Page() {
         premium: false,
 
         position: formData.position ? [formData.position] : [],
-        nationalities: formData.nationalities ? [formData.nationalities] : [],
+        nationalities: formData.nationalities ? formData.nationalities : [],
       };
 
       const response = await fetch('/api/player', {
