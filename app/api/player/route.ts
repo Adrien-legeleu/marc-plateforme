@@ -1,6 +1,4 @@
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/lib/prisma';
 
 // (Optionnel) Augmenter la limite de taille du body si nécessaire (ex. dans un fichier route.ts Next.js App Router)
 // export const config = { api: { bodyParser: { sizeLimit: '100mb' } } };

@@ -13,6 +13,7 @@ import StrongFootSelector from '@/app/components/Form/FavoriteFoot';
 import EducationLevelSelector from '@/app/components/Form/EducationLevel';
 import MobilitySelector from '@/app/components/Form/MobilitySelector';
 import NiveauActuelSelector from '@/app/components/Form/ActualLevel';
+import { Label } from '@/components/ui/label';
 
 export default function Page() {
   const [formData, setFormData] = useState({
@@ -152,133 +153,169 @@ export default function Page() {
   };
 
   return (
-    <div className="bg-gradient-to-b from-white to-marcblue/50 rounded-[3rem] gap-5 pt-40 pb-20 w-full flex flex-col items-center justify-center">
-      <h1 className="text-6xl max-w-2xl text-center font-bold mb-10">
-        Vous inscrire en tant que joueur
-      </h1>
+    <div className="bg-gradient-to-b from-white to-marcblue/40 rounded-[3rem] gap-16 pt-40 pb-20 w-full flex flex-col items-center justify-center">
+      <div>
+        <h1 className="text-6xl max-w-2xl text-center font-bold mb-10">
+          Inscription joueur
+        </h1>
+        <p className="text-center text-lg text-gray-600">
+          Complétez ce formulaire pour rejoindre notre réseau et valoriser votre
+          profil.
+        </p>
+      </div>
+
       <form
         onSubmit={handleSubmit}
-        className="grid sm:grid-cols-2 gap-8 grid-cols-1 w-full max-w-5xl px-8"
+        className="w-full space-y-20 max-w-5xl px-8"
       >
-        {/* Nom et prénom */}
-        <Input
-          placeholder="Nom"
-          value={formData.name}
-          onChange={(e) => handleFormData('name', e.target.value)}
-          required
-        />
-        <Input
-          placeholder="Prénom"
-          value={formData.firstName}
-          onChange={(e) => handleFormData('firstName', e.target.value)}
-          required
-        />
-        {/* Email */}
-        <Input
-          type="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={(e) => handleFormData('email', e.target.value)}
-          required
-        />
-        {/* Date de naissance */}
-        <Input
-          type="date"
-          placeholder="Date de naissance"
-          value={formData.bornDate}
-          onChange={(e) => handleFormData('bornDate', e.target.value)}
-          required
-        />
+        <div className="grid sm:grid-cols-2 border border-[#0000000a] gap-6 grid-cols-1 p-5 relative ">
+          <div className="w-2 h-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-marcblue absolute top-0 left-0" />
+          <div className="w-2 h-2  translate-x-1/2 -translate-y-1/2 rounded-full bg-marcblue absolute top-0 right-0" />
+          <div className="w-2 h-2  -translate-x-1/2 translate-y-1/2 rounded-full bg-marcblue absolute bottom-0 left-0" />
+          <div className="w-2 h-2 translate-x-1/2 translate-y-1/2 rounded-full bg-marcblue absolute bottom-0 right-0" />
+          {/* Nom et prénom */}
+          <Input
+            placeholder="Nom"
+            value={formData.name}
+            onChange={(e) => handleFormData('name', e.target.value)}
+            required
+          />
+          <Input
+            placeholder="Prénom"
+            value={formData.firstName}
+            onChange={(e) => handleFormData('firstName', e.target.value)}
+            required
+          />
+          {/* Email */}
+          <Input
+            type="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={(e) => handleFormData('email', e.target.value)}
+            required
+          />
+          {/* Date de naissance */}
+          <Input
+            type="date"
+            placeholder="Date de naissance"
+            value={formData.bornDate}
+            onChange={(e) => handleFormData('bornDate', e.target.value)}
+            required
+          />
+          {/* Téléphone */}
+          <Input
+            placeholder="Téléphone"
+            value={formData.telephone}
+            onChange={(e) => handleFormData('telephone', e.target.value)}
+          />
+          {/* Taille et poids */}
+          <Input
+            type="number"
+            placeholder="Taille (cm)"
+            value={formData.height}
+            onChange={(e) => handleFormData('height', e.target.value)}
+          />
+          <Input
+            type="number"
+            placeholder="Poids (kg)"
+            value={formData.weight}
+            onChange={(e) => handleFormData('weight', e.target.value)}
+          />
+        </div>
         {/* Poste préféré */}
-        <PreferredPositionSelector
-          value={formData.position}
-          onChange={(value) => handleFormData('position', value)}
-        />
+        <div className="border border-[#0000000a]  p-5 relative ">
+          <div className="w-2 h-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-marcblue absolute top-0 left-0" />
+          <div className="w-2 h-2  translate-x-1/2 -translate-y-1/2 rounded-full bg-marcblue absolute top-0 right-0" />
+          <div className="w-2 h-2  -translate-x-1/2 translate-y-1/2 rounded-full bg-marcblue absolute bottom-0 left-0" />
+          <div className="w-2 h-2 translate-x-1/2 translate-y-1/2 rounded-full bg-marcblue absolute bottom-0 right-0" />
+          <div className="space-y-8">
+            <PreferredPositionSelector
+              value={formData.position}
+              onChange={(value) => handleFormData('position', value)}
+            />
 
-        {/* Pied fort (gauche/droit/ambidextre) */}
-        <StrongFootSelector
-          value={formData.strongFoot}
-          onChange={(value) => handleFormData('strongFoot', value)}
-        />
+            {/* Pied fort (gauche/droit/ambidextre) */}
+            <StrongFootSelector
+              value={formData.strongFoot}
+              onChange={(value) => handleFormData('strongFoot', value)}
+            />
 
-        {/* Taille et poids */}
-        <Input
-          type="number"
-          placeholder="Taille (cm)"
-          value={formData.height}
-          onChange={(e) => handleFormData('height', e.target.value)}
-        />
-        <Input
-          type="number"
-          placeholder="Poids (kg)"
-          value={formData.weight}
-          onChange={(e) => handleFormData('weight', e.target.value)}
-        />
-        {/* Nationalité */}
-        <NationalitySelector
-          value={formData.nationalities}
-          onChange={(value) => handleFormData('nationalities', value)}
-        />
+            {/* Nationalité */}
+            <NationalitySelector
+              value={formData.nationalities}
+              onChange={(value) => handleFormData('nationalities', value)}
+            />
 
-        {/* Dernier club et niveau actuel */}
-        <Input
-          placeholder="Dernier club"
-          value={formData.lastClub}
-          onChange={(e) => handleFormData('lastClub', e.target.value)}
-        />
-        <NiveauActuelSelector
-          value={formData.currentLevel}
-          onChange={(value) => handleFormData('currentLevel', value)}
-        />
+            {/* Dernier club et niveau actuel */}
+            <div>
+              <Label>Votre dernier club</Label>
+              <Input
+                placeholder="Dernier club"
+                value={formData.lastClub}
+                onChange={(e) => handleFormData('lastClub', e.target.value)}
+              />
+            </div>
+            <NiveauActuelSelector
+              value={formData.currentLevel}
+              onChange={(value) => handleFormData('currentLevel', value)}
+            />
 
-        {/* Niveau d'étude */}
-        <EducationLevelSelector
-          value={formData.educationLevel}
-          onChange={(value) => handleFormData('educationLevel', value)}
-        />
+            {/* Niveau d'étude */}
+            <EducationLevelSelector
+              value={formData.educationLevel}
+              onChange={(value) => handleFormData('educationLevel', value)}
+            />
 
-        {/* Mobilité / Disponibilité */}
-        <MobilitySelector
-          value={formData.mobility}
-          onChange={(value) => handleFormData('mobility', value)}
-        />
+            {/* Mobilité / Disponibilité */}
+            <MobilitySelector
+              value={formData.mobility}
+              onChange={(value) => handleFormData('mobility', value)}
+            />
+          </div>
+        </div>
+        <div className="border border-[#0000000a]  p-5 relative ">
+          <div className="w-2 h-2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-marcblue absolute top-0 left-0" />
+          <div className="w-2 h-2  translate-x-1/2 -translate-y-1/2 rounded-full bg-marcblue absolute top-0 right-0" />
+          <div className="w-2 h-2  -translate-x-1/2 translate-y-1/2 rounded-full bg-marcblue absolute bottom-0 left-0" />
+          <div className="w-2 h-2 translate-x-1/2 translate-y-1/2 rounded-full bg-marcblue absolute bottom-0 right-0" />
 
-        {/* Téléphone */}
-        <Input
-          placeholder="Téléphone"
-          value={formData.telephone}
-          onChange={(e) => handleFormData('telephone', e.target.value)}
-        />
-
-        {/* Sections d'upload de fichiers (CV, photos, vidéos) */}
-        <div className="col-span-2 flex flex-col gap-6 items-center justify-center">
-          <UploadSection
-            title="Téléverser votre CV"
-            uploadState={cvUpload}
-            actions={cvActions}
-            maxSizeMB={maxSizeMB}
-          />
-          <UploadSection
-            title="Téléverser vos photos (portrait, action)"
-            uploadState={photoUpload}
-            actions={photoActions}
-            maxSizeMB={maxSizeMB}
-          />
-          <UploadSection
-            title="Téléverser vos vidéos (YouTube, Vimeo ou fichier)"
-            uploadState={videoUpload}
-            actions={videoActions}
-            maxSizeMB={maxSizeMB}
-          />
+          <div className="space-y-8">
+            <UploadSection
+              title="Téléverser votre CV"
+              uploadState={cvUpload}
+              actions={cvActions}
+              maxSizeMB={maxSizeMB}
+            />
+            <UploadSection
+              title="Téléverser vos photos (portrait, action)"
+              uploadState={photoUpload}
+              actions={photoActions}
+              maxSizeMB={maxSizeMB}
+            />
+            <UploadSection
+              title="Téléverser vos vidéos (YouTube, Vimeo ou fichier)"
+              uploadState={videoUpload}
+              actions={videoActions}
+              maxSizeMB={maxSizeMB}
+            />
+          </div>
         </div>
 
         {/* Bouton Envoyer */}
-        <Button
-          type="submit"
-          className="col-span-2 mx-auto px-16 py-6 mt-4 text-white bg-marcblue rounded-3xl shadow-xl"
-        >
-          Envoyer
-        </Button>
+        <div className="w-full flex  gap-10 items-center justify-center">
+          <Button
+            type="submit"
+            className=" px-16 py-6 mt-4 text-black bg-white rounded-3xl shadow-xl"
+          >
+            Envoyer
+          </Button>
+          <Button
+            type="button"
+            className="px-16 py-6 mt-4 text-white bg-marcblue rounded-3xl shadow-xl"
+          >
+            Être mis en avant
+          </Button>
+        </div>
       </form>
     </div>
   );

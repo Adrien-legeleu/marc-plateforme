@@ -6,26 +6,32 @@ import { MagneticButton } from '@/components/ui/magnetic-button';
 import {
   IconClipboardList,
   IconUser,
-  IconUsersGroup,
+  IconHeartRateMonitor,
 } from '@tabler/icons-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Link from 'next/link';
 
 export interface Player {
   id: number;
   name: string;
   firstName: string;
-  age: number;
+  bornDate: string; // DateTime en string (ISO)
   email: string;
+  telephone?: string;
+  position: string[];
+  strongFoot?: string;
+  height?: number;
+  weight?: number;
+  nationalities: string[];
+  lastClub?: string;
+  currentLevel?: string;
+  educationLevel?: string;
+  mobility?: string;
   cvUrls: string[];
+  photoUrls: string[];
+  videoUrls: string[];
   premium: boolean;
-}
-
-export interface Club {
-  id: number;
-  name: string;
-  city: string;
-  categories?: string;
-  createdAt: string;
+  createdAt: string; // DateTime
 }
 
 export interface Entraineur {
@@ -33,16 +39,25 @@ export interface Entraineur {
   name: string;
   firstName: string;
   email: string;
-  telephone: string;
+  telephone?: string;
+  diplomas: string[];
+  experience?: string;
+  pastClubs: string[];
+  targetAudience: string[];
+  type: 'entraineur' | 'préparateur physique';
+  projectType: string[];
+  cvUrls: string[];
+  photoUrls: string[];
+  socialLinks: string[];
   createdAt: string;
 }
 
 export default function Page() {
   const [nameProfils, setNameProfils] = useState<
-    'players' | 'clubs' | 'entraineurs'
+    'players' | 'entraineurs' | 'preparateurs'
   >('players');
+
   const [listProfilsPLayers, setListProfilsPLayers] = useState<Player[]>([]);
-  const [listProfilsClubs, setListProfilsClubs] = useState<Club[]>([]);
   const [listProfilsEntraineurs, setListProfilsEntraineurs] = useState<
     Entraineur[]
   >([]);
@@ -54,16 +69,6 @@ export default function Page() {
       setListProfilsPLayers(data);
     } catch (error) {
       console.error('Erreur lors de la récupération des joueurs', error);
-    }
-  };
-
-  const handleClubs = async () => {
-    try {
-      const response = await fetch('/api/club');
-      const data = await response.json();
-      setListProfilsClubs(data);
-    } catch (error) {
-      console.error('Erreur lors de la récupération des clubs', error);
     }
   };
 
@@ -79,7 +84,6 @@ export default function Page() {
 
   useEffect(() => {
     handlePlayers();
-    handleClubs();
     handleEntraineurs();
   }, []);
 
@@ -104,37 +108,40 @@ export default function Page() {
               animate="visible"
               exit="hidden"
               variants={animationVariant}
-              className="bg-white rounded-lg shadow p-4 w-full"
+              className="bg-white  rounded-[3rem] bg-cover bg-center"
+              style={{
+                backgroundImage: profil.photoUrls[0]
+                  ? `url(${profil.photoUrls[0]})`
+                  : undefined,
+              }}
             >
-              <p className="font-semibold">
-                {profil.firstName} {profil.name}
-              </p>
-              <p className="text-sm text-gray-500">{profil.email}</p>
-              <p className="text-sm">Âge : {profil.age}</p>
-            </motion.div>
-          ))}
-        </AnimatePresence>
-      );
-    }
-
-    if (nameProfils === 'clubs') {
-      return (
-        <AnimatePresence>
-          {listProfilsClubs.map((club, i) => (
-            <motion.div
-              key={club.id}
-              custom={i}
-              initial="hidden"
-              animate="visible"
-              exit="hidden"
-              variants={animationVariant}
-              className="bg-white rounded-lg shadow p-4 w-full"
-            >
-              <p className="font-semibold">{club.name}</p>
-              <p className="text-sm text-gray-500">{club.city}</p>
-              {club.categories && (
-                <p className="text-sm">Catégories : {club.categories}</p>
-              )}
+              <Link
+                href={`/players/${profil.id}`}
+                className="p-4 flex flex-col h-full items-start justify-end w-full relative"
+              >
+                <h3 className="font-semibold text-white text-2xl">
+                  {profil.firstName} {profil.name}
+                </h3>
+                <div className="flex flex-wrap gap-2 pt-2">
+                  <p className="text-sm text-black bg-white px-3 py-1 items-center justify-center flex rounded-3xl">
+                    {Math.floor(
+                      (new Date().getTime() -
+                        new Date(profil.bornDate).getTime()) /
+                        (1000 * 60 * 60 * 24 * 365.25)
+                    )}{' '}
+                    ans
+                  </p>
+                  <p className="text-sm text-black bg-white px-3 py-1 items-center justify-center flex rounded-3xl">
+                    {profil.height} cm
+                  </p>
+                  <p className="text-sm text-black bg-white px-3 py-1 items-center justify-center flex rounded-3xl">
+                    {profil.position}
+                  </p>
+                  <p className="text-sm text-black bg-white px-3 py-1 items-center justify-center flex rounded-3xl">
+                    {profil.currentLevel}
+                  </p>
+                </div>
+              </Link>
             </motion.div>
           ))}
         </AnimatePresence>
@@ -142,23 +149,95 @@ export default function Page() {
     }
 
     if (nameProfils === 'entraineurs') {
+      const entraineurs = listProfilsEntraineurs.filter(
+        (e) => e.type === 'entraineur'
+      );
       return (
         <AnimatePresence>
-          {listProfilsEntraineurs.map((coach, i) => (
+          {entraineurs.map((profil, i) => (
             <motion.div
-              key={coach.id}
+              key={profil.id}
               custom={i}
               initial="hidden"
               animate="visible"
               exit="hidden"
               variants={animationVariant}
-              className="bg-white rounded-lg shadow p-4 w-full"
+              className="bg-white  rounded-[3rem] bg-cover bg-center"
+              style={{
+                backgroundImage: profil.photoUrls[0]
+                  ? `url(${profil.photoUrls[0]})`
+                  : undefined,
+              }}
             >
-              <p className="font-semibold">
-                {coach.firstName} {coach.name}
-              </p>
-              <p className="text-sm text-gray-500">{coach.email}</p>
-              <p className="text-sm">Tél. : {coach.telephone}</p>
+              <Link
+                href={`/entraineurs/${profil.id}`}
+                className="p-4 flex flex-col h-full items-start justify-end w-full relative"
+              >
+                <h3 className="font-semibold text-white text-2xl">
+                  {profil.firstName} {profil.name}
+                </h3>
+                <p className="line-clamp-2 text-white">{profil.experience}</p>
+                <div className="flex flex-wrap gap-2 pt-2">
+                  {profil.pastClubs.map((pastClub, index) => {
+                    return (
+                      <p
+                        key={index}
+                        className="text-sm text-black bg-white px-3 py-1 items-center justify-center flex rounded-3xl"
+                      >
+                        {pastClub}
+                      </p>
+                    );
+                  })}
+                </div>
+              </Link>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      );
+    }
+
+    if (nameProfils === 'preparateurs') {
+      const preparateurs = listProfilsEntraineurs.filter(
+        (e) => e.type === 'préparateur physique'
+      );
+      return (
+        <AnimatePresence>
+          {preparateurs.map((profil, i) => (
+            <motion.div
+              key={profil.id}
+              custom={i}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+              variants={animationVariant}
+              className="bg-white  rounded-[3rem] bg-cover bg-center"
+              style={{
+                backgroundImage: profil.photoUrls[0]
+                  ? `url(${profil.photoUrls[0]})`
+                  : undefined,
+              }}
+            >
+              <Link
+                href={`/entraineurs/${profil.id}`}
+                className="p-4 flex flex-col h-full items-start justify-end w-full relative"
+              >
+                <h3 className="font-semibold text-white text-2xl">
+                  {profil.firstName} {profil.name}
+                </h3>
+                <p className="line-clamp-2 text-white">{profil.experience}</p>
+                <div className="flex flex-wrap gap-2 pt-2">
+                  {profil.pastClubs.map((pastClub, index) => {
+                    return (
+                      <p
+                        key={index}
+                        className="text-sm text-black bg-white px-3 py-1 items-center justify-center flex rounded-3xl"
+                      >
+                        {pastClub}
+                      </p>
+                    );
+                  })}
+                </div>
+              </Link>
             </motion.div>
           ))}
         </AnimatePresence>
@@ -185,15 +264,6 @@ export default function Page() {
           </MagneticButton>
           <MagneticButton>
             <Button
-              onClick={() => setNameProfils('clubs')}
-              className="bg-gradient-to-b from-marcblue to-marcblue/40 flex flex-col gap-3 font-bold shadow-xl backdrop-blur-sm w-full h-full hover:bg-blue-600/60 cursor-pointer transition-colors text-2xl text-white py-5 rounded-[3rem]"
-            >
-              <IconUsersGroup className="min-w-10 min-h-10" />
-              Clubs
-            </Button>
-          </MagneticButton>
-          <MagneticButton>
-            <Button
               onClick={() => setNameProfils('entraineurs')}
               className="bg-gradient-to-b from-marcblue to-marcblue/40 flex flex-col gap-3 font-bold shadow-xl backdrop-blur-sm w-full h-full hover:bg-blue-600/60 cursor-pointer transition-colors text-2xl text-white py-5 rounded-[3rem]"
             >
@@ -201,10 +271,27 @@ export default function Page() {
               Entraîneurs
             </Button>
           </MagneticButton>
+          <MagneticButton>
+            <Button
+              onClick={() => setNameProfils('preparateurs')}
+              className="bg-gradient-to-b from-marcblue to-marcblue/40 flex flex-col gap-3 font-bold shadow-xl backdrop-blur-sm w-full h-full hover:bg-blue-600/60 cursor-pointer transition-colors text-2xl text-white py-5 rounded-[3rem]"
+            >
+              <IconHeartRateMonitor className="min-w-10 min-h-10" />
+              Préparateurs
+            </Button>
+          </MagneticButton>
         </div>
       </div>
 
-      <div className="w-full max-w-4xl grid-cols-3 grid gap-6 mx-auto mt-32">
+      <h2 className="text-5xl font-semibold tracking-wide text-center pt-16">
+        {nameProfils == 'entraineurs'
+          ? 'Entraineurs'
+          : nameProfils == 'players'
+          ? 'Joueurs'
+          : 'Préparateurs'}
+      </h2>
+
+      <div className="w-full max-w-5xl grid-cols-3 grid-rows-[repeat(auto-fill,_300px)] grid gap-8 mx-auto mt-16">
         {renderList()}
       </div>
     </div>

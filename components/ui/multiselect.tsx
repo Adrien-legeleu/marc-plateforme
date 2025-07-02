@@ -444,13 +444,13 @@ const MultipleSelector = ({
           inputRef?.current?.focus();
         }}
       >
-        <div className="flex  flex-wrap gap-1">
+        <div className="flex px-1  flex-wrap gap-1">
           {selected.map((option) => {
             return (
               <div
                 key={option.value}
                 className={cn(
-                  'animate-fadeIn bg-background text-secondary-foreground hover:bg-background relative inline-flex h-7 cursor-default items-center rounded-md border ps-2 pe-7 pl-2 text-xs font-medium transition-all disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 data-fixed:pe-2',
+                  'animate-fadeIn bg-marcblue/20 text-secondary-foreground hover:bg-background relative inline-flex h-7 cursor-default items-center rounded-2xl border ps-2 pe-7 pl-4 text-md font-medium transition-all disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 data-fixed:pe-2',
                   badgeClassName
                 )}
                 data-fixed={option.fixed}

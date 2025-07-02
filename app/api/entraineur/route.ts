@@ -1,10 +1,21 @@
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
-
+import { prisma } from '@/lib/prisma';
 export async function POST(req: Request) {
   const body = await req.json();
-  const { name, firstName, email, telephone } = body;
+  const {
+    name,
+    firstName,
+    email,
+    telephone,
+    diplomas,
+    experience,
+    pastClubs,
+    targetAudience,
+    type,
+    projectType,
+    cvUrls,
+    photoUrls,
+    socialLinks,
+  } = body;
   try {
     const entraineur = await prisma.entraineur.create({
       data: {
@@ -12,6 +23,15 @@ export async function POST(req: Request) {
         firstName,
         email,
         telephone,
+        diplomas: diplomas ?? [],
+        experience: experience ?? '',
+        pastClubs: pastClubs ?? [],
+        targetAudience: targetAudience ?? [],
+        type,
+        projectType: Array.isArray(projectType) ? projectType : [],
+        cvUrls: cvUrls ?? [],
+        photoUrls: photoUrls ?? [],
+        socialLinks: socialLinks ?? [],
       },
     });
     return Response.json(entraineur);

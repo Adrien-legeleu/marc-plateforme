@@ -36,7 +36,7 @@ export default function UploadSection({
         onDrop={handleDrop}
         data-dragging={isDragging || undefined}
         data-files={files.length > 0 || undefined}
-        className="border-input data-[dragging=true]:bg-accent/50 bg-white has-[input:focus]:border-ring has-[input:focus]:ring-ring/50 relative flex min-h-52 flex-col items-center overflow-hidden rounded-xl border border-dashed p-4 transition-colors not-data-[files]:justify-center has-[input:focus]:ring-[3px]"
+        className="border-input data-[dragging=true]:bg-accent/50 bg-white has-[input:focus]:border-ring has-[input:focus]:ring-ring/50 relative flex min-h-52 flex-col items-center overflow-hidden rounded-3xl border border-dashed p-4 transition-colors not-data-[files]:justify-center has-[input:focus]:ring-[3px]"
       >
         <input
           {...getInputProps()}
@@ -73,14 +73,14 @@ export default function UploadSection({
           {files.map((file) => (
             <div
               key={file.id}
-              className="bg-background flex items-center justify-between gap-2 rounded-lg border p-2 pe-3"
+              className="bg-white flex items-center justify-between gap-2 rounded-3xl border p-2 pe-3"
             >
               <div className="flex items-center gap-3 overflow-hidden">
                 <div className="bg-accent aspect-square shrink-0 rounded">
                   <img
                     src={file.preview}
                     alt={file.file.name}
-                    className="size-10 rounded-[inherit] object-cover"
+                    className="size-10 rounded-2xl object-cover"
                   />
                 </div>
                 <div className="flex min-w-0 flex-col gap-0.5">

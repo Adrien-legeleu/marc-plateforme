@@ -39,10 +39,23 @@ model Entraineur {
   diplomas       String[]     
   experience     String?      
   pastClubs      String[]      
-  targetAudience String[]     
-  projectType    String?       
+  targetAudience String[] 
+  type String @default("entraineur")
+   
+  projectType    String[]       
   cvUrls         String[]      
-  photoUrl       String?      
+  photoUrls       String[]      
   socialLinks    String[]     
   createdAt      DateTime      @default(now())
+}
+
+
+model Article {
+  id String @id @default(cuid())
+  title String
+  content Json
+slug String
+pageParent String
+createdAt DateTime @default(now())
+updatedAt DateTime @updatedAt
 }
