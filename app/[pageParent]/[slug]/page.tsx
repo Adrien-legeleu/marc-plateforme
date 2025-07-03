@@ -15,8 +15,10 @@ interface PageProps {
   };
 }
 
-export default async function Page({ params }: PageProps) {
-  const { pageParent, slug } = params;
+export default async function Page(props: {
+  params: Promise<{ pageParent: string; slug: string }>;
+}) {
+  const { pageParent, slug } = await props.params;
 
   const article = await prisma.article.findFirst({
     where: {

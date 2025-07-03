@@ -12,7 +12,7 @@ export default function SectionPremium() {
         alt="jeune homme qui joue au foot"
         width={500}
         height={500}
-        className="lg:w-56 w-40  lg:h-full   h-2/3  rounded-[3rem] z-0 shadow-xl object-right object-cover absolute top-0 -translate-y-full  lg:left-0 left-1/2 max-lg:-translate-x-1/2 "
+        className="lg:w-56 w-40  lg:h-full   h-2/3  rounded-[3rem] z-0 shadow-xl object-right object-cover absolute top-0 max-lg:-translate-y-full  lg:left-0 left-1/2 max-lg:-translate-x-1/2 "
       />
       <Image
         src={'/freepik__upload__77451.jpeg'}
