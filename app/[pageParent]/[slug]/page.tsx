@@ -8,17 +8,19 @@ type Block =
   | { type: 'table'; headers: string[]; rows: string[][] };
 
 type ArticlePageParams = {
-  params: {
+  params: Promise<{
     pageParent: string;
     slug: string;
-  };
+  }>;
 };
 
 export default async function Page({ params }: ArticlePageParams) {
+  const { pageParent, slug } = await params;
+
   const article = await prisma.article.findFirst({
     where: {
-      pageParent: params.pageParent,
-      slug: params.slug,
+      pageParent,
+      slug,
     },
   });
 
