@@ -27,8 +27,9 @@ export async function DELETE(req: Request) {
 
 export async function PUT(
   req: Request,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await context.params;
   try {
     const body = await req.json();
 
@@ -50,7 +51,7 @@ export async function PUT(
     }
 
     const article = await prisma.article.update({
-      where: { id: params.id },
+      where: { id: id },
       data: {
         title: body.title,
         slug: slugify(body.title),
