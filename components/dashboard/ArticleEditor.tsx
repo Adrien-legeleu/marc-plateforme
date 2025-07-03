@@ -351,15 +351,15 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({
   }, [initialSubCategory, subCategories]);
 
   return (
-    <div className="px-5">
-      <div className="border shadow-xl max-w-7xl bg-white p-10 mx-auto rounded-[3rem]">
+    <div className="sm:px-5 px-2">
+      <div className="border shadow-xl max-w-7xl bg-white md:p-10 sm:p-5 p-4 mx-auto rounded-[3rem]">
         {/* Titre */}
         <div className="mb-4">
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full border px-4  shadow-sm text-lg py-3 rounded-3xl"
+            className="w-full border px-4 shadow-sm text-lg max-sm:text-base py-3 rounded-3xl"
             placeholder="Titre (ne s'affiche pas)"
           />
         </div>
@@ -372,7 +372,7 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({
           <select
             value={pageParent}
             onChange={(e) => setPageParent(e.target.value)}
-            className="w-full border px-4 shadow-sm py-3 rounded-3xl"
+            className="w-full border px-4 shadow-sm py-3 rounded-3xl text-lg max-sm:text-base"
           >
             <option value="agent">Agent sportifs</option>
             <option value="amateur">Foot Amateur</option>
@@ -380,6 +380,7 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({
             <option value="management">Management</option>
           </select>
         </div>
+
         <div className="mb-6">
           <label className="block text-md font-medium mb-1">
             Sous-rubrique :
@@ -387,7 +388,7 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({
           <select
             value={subCategories}
             onChange={(e) => setSubCategory(e.target.value)}
-            className="shadow-sm border px-4 py-3 rounded-3xl"
+            className="shadow-sm border px-4 py-3 rounded-3xl text-lg max-sm:text-base"
           >
             <option value="">Aucune</option>
             {subCategories.map((scName) => (
@@ -400,7 +401,7 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({
           <input
             placeholder="Nouvelle sous-rubrique"
             value={newSubCategory}
-            className=" text-md border px-4 py-3 rounded-3xl shadow-sm"
+            className="text-md border px-4 py-3 rounded-3xl shadow-sm text-lg max-sm:text-base"
             onChange={(e) => setNewSubCategory(e.target.value)}
           />
         </div>
@@ -414,7 +415,7 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({
                 onChange={(e) =>
                   handleTypeChange(block.id, e.target.value as BlockType)
                 }
-                className="border px-3 py-2 rounded-3xl"
+                className="border px-3 py-2 rounded-3xl text-base max-sm:text-sm"
               >
                 <option value="h1">H1</option>
                 <option value="h2">H2</option>
@@ -427,7 +428,7 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({
                 {idx > 0 && (
                   <button
                     onClick={() => handleMoveUp(block.id)}
-                    className="px-3 py-2 bg-gray-200 rounded-3xl"
+                    className="px-3 py-2 bg-gray-200 rounded-3xl text-sm max-sm:text-xs"
                   >
                     ↑
                   </button>
@@ -435,14 +436,14 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({
                 {idx < blocks.length - 1 && (
                   <button
                     onClick={() => handleMoveDown(block.id)}
-                    className="px-3 py-2 bg-gray-200 rounded-3xl"
+                    className="px-3 py-2 bg-gray-200 rounded-3xl text-sm max-sm:text-xs"
                   >
                     ↓
                   </button>
                 )}
                 <button
                   onClick={() => handleRemoveBlock(block.id)}
-                  className="px-3 py-2 bg-red-200 rounded-3xl"
+                  className="px-3 py-2 bg-red-200 rounded-3xl text-sm max-sm:text-xs"
                 >
                   ✕
                 </button>
@@ -460,12 +461,12 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({
                       onChange={(e) =>
                         handleListItemChange(block.id, i, e.target.value)
                       }
-                      className="flex-1  border-b border-gray-400 focus:outline-none"
+                      className="flex-1 border-b border-gray-400 focus:outline-none text-base max-sm:text-xs"
                       placeholder={`Élément ${i + 1}`}
                     />
                     <button
                       onClick={() => handleRemoveListItem(block.id, i)}
-                      className="ml-2 text-red-600"
+                      className="ml-2 text-red-600 text-sm max-sm:text-xs"
                     >
                       ✕
                     </button>
@@ -473,18 +474,18 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({
                 ))}
                 <button
                   onClick={() => handleAddListItem(block.id)}
-                  className="text-sm text-blue-600"
+                  className="text-sm text-blue-600 max-sm:text-xs"
                 >
                   + Ajouter un élément
                 </button>
               </div>
             ) : block.type === 'table' ? (
               <div className="overflow-auto rounded-3xl border border-gray-300">
-                <table className="w-full border-separate border-spacing-0">
+                <table className="w-full border-separate border-spacing-0 text-sm max-sm:text-xs">
                   <thead>
                     <tr>
                       {block.headers.map((h, c) => (
-                        <th key={h.id} className="border  p-2">
+                        <th key={h.id} className="border p-2">
                           <input
                             type="text"
                             value={h.content}
@@ -495,12 +496,12 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({
                                 e.target.value
                               )
                             }
-                            className="w-full px-2"
+                            className="w-full px-2 text-base max-sm:text-sm"
                             placeholder={`Entête ${c + 1}`}
                           />
                           <button
                             onClick={() => handleRemoveTableColumn(block.id, c)}
-                            className="text-red-600 ml-1"
+                            className="text-red-600 ml-1 text-sm max-sm:text-xs"
                           >
                             ✕
                           </button>
@@ -509,7 +510,7 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({
                       <th className="p-2">
                         <button
                           onClick={() => handleAddTableColumn(block.id)}
-                          className="text-blue-600"
+                          className="text-blue-600 text-sm max-sm:text-xs"
                         >
                           + Colonne
                         </button>
@@ -532,14 +533,14 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({
                                   e.target.value
                                 )
                               }
-                              className="w-full"
+                              className="w-full text-base max-sm:text-sm"
                             />
                           </td>
                         ))}
                         <td className="p-2">
                           <button
                             onClick={() => handleRemoveTableRow(block.id, ridx)}
-                            className="text-red-600"
+                            className="text-red-600 text-sm max-sm:text-xs"
                           >
                             Supprimer ligne
                           </button>
@@ -550,7 +551,7 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({
                       <td colSpan={block.headers.length + 1} className="p-2">
                         <button
                           onClick={() => handleAddTableRow(block.id)}
-                          className="text-blue-600"
+                          className="text-blue-600 text-sm max-sm:text-xs"
                         >
                           + Ajouter une ligne
                         </button>
@@ -559,42 +560,38 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({
                   </tbody>
                 </table>
               </div>
+            ) : block.type === 'paragraph' ? (
+              <textarea
+                value={block.content}
+                onChange={(e) => handleTextChange(block.id, e.target.value)}
+                className="w-full border rounded-3xl px-3 py-2 text-base max-sm:text-xs"
+                rows={3}
+                placeholder="Paragraphe..."
+              />
             ) : (
-              <>
-                {block.type === 'paragraph' ? (
-                  <textarea
-                    value={(block as ParagraphBlock).content}
-                    onChange={(e) => handleTextChange(block.id, e.target.value)}
-                    className="w-full border rounded-3xl px-3 py-2"
-                    rows={3}
-                    placeholder="Paragraphe..."
-                  />
-                ) : (
-                  <input
-                    type="text"
-                    value={(block as HeadingBlock).content}
-                    onChange={(e) => handleTextChange(block.id, e.target.value)}
-                    className="w-full border rounded-3xl px-3 py-2 text-xl font-semibold"
-                    placeholder={
-                      block.type === 'h1'
-                        ? 'Titre principal...'
-                        : block.type === 'h2'
-                        ? 'Sous-titre...'
-                        : 'Sous-sous-titre...'
-                    }
-                  />
-                )}
-              </>
+              <input
+                type="text"
+                value={block.content}
+                onChange={(e) => handleTextChange(block.id, e.target.value)}
+                className="w-full border rounded-3xl px-3 py-2 text-xl max-sm:text-sm font-semibold"
+                placeholder={
+                  block.type === 'h1'
+                    ? 'Titre principal...'
+                    : block.type === 'h2'
+                    ? 'Sous-titre...'
+                    : 'Sous-sous-titre...'
+                }
+              />
             )}
           </div>
         ))}
 
         {/* Ajouter un bloc */}
-        <div className="mt-2">
+        <div className="mt-2 flex">
           <select
             value={newBlockType}
             onChange={(e) => setNewBlockType(e.target.value as BlockType)}
-            className="border px-3 py-2 rounded-3xl"
+            className="border px-3 py-2 rounded-3xl text-base max-sm:text-xs"
           >
             <option value="paragraph">Paragraphe</option>
             <option value="h1">Titre principal (H1)</option>
@@ -605,7 +602,7 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({
           </select>
           <button
             onClick={() => handleAddBlock(newBlockType)}
-            className="ml-2 px-4 py-2 bg-blue-600 text-white rounded-3xl"
+            className="ml-2  px-4 py-2 bg-blue-600 text-white rounded-3xl text-sm max-sm:text-xs"
           >
             Ajouter un bloc
           </button>
@@ -614,7 +611,7 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({
         {/* Bouton Enregistrer */}
         <button
           onClick={handleSave}
-          className="mt-4 px-5 py-3 bg-green-600 text-white rounded-3xl"
+          className="mt-4 px-5 py-3 bg-green-600 text-white rounded-3xl text-sm max-sm:text-xs"
         >
           Enregistrer
         </button>

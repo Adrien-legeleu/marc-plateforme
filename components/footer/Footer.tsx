@@ -14,7 +14,7 @@ export default function Footer() {
           <h2 className="lg:text-5xl text-3xl tracking-wide font-extrabold  text-marcblue">
             AgentSport
           </h2>
-          <p className="lg:text-md text-sm text-gray-600">
+          <p className="lg:text-md text-sm max-lg:text-center text-gray-600">
             Plateforme dédiée aux agents, joueurs, clubs et entraîneurs du monde
             du football.
           </p>

@@ -7,15 +7,6 @@ import { Button } from '../ui/button';
 import { Menu, MenuItem, HoveredLink } from '../ui/navbar-menu';
 import { HeaderResponsive } from './HeaderResponsive';
 
-import {
-  IconGavel,
-  IconUsersGroup,
-  IconMail,
-  IconRocket,
-  IconShieldCheck,
-  IconInfoSquare,
-} from '@tabler/icons-react';
-
 export function Header({ className }: { className?: string }) {
   const [active, setActive] = useState<string | null>(null);
 

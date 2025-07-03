@@ -72,7 +72,7 @@ export default async function PlayerPage({ params }: PlayerPageProps) {
         </div>
 
         {/* Infos générales */}
-        <div className="flex gap-8 w-full">
+        <div className="flex max-sm:flex-col gap-8 w-full">
           <div className="bg-white/90 flex-1 rounded-[3rem] shadow-lg p-10 flex flex-col gap-2 border border-[#f2f2f2]">
             <h2 className="font-bold text-xl text-marcblue mb-2">
               Profil sportif

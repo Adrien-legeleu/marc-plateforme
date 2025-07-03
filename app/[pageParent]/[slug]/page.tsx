@@ -33,7 +33,7 @@ export default async function ArticlePage({
         )}
       />
       <div className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] dark:bg-black"></div>
-      <h1 className="text-5xl text-center text-marcbluedark z-10 relative font-bold mb-16">
+      <h1 className="md:text-5xl sm:text-4xl text-3xl text-center text-marcbluedark z-10 relative font-bold mb-16">
         {article.title}
       </h1>
 
@@ -43,7 +43,7 @@ export default async function ArticlePage({
             return (
               <h1
                 key={idx}
-                className="text-4xl text-marcblue relative z-10 font-bold my-7"
+                className="md:text-4xl sm:text-3xl text-2xl text-marcblue relative z-10 font-bold my-7"
               >
                 {block.content}
               </h1>
@@ -52,7 +52,7 @@ export default async function ArticlePage({
             return (
               <h2
                 key={idx}
-                className="text-3xl relative text-marcblue z-10 font-semibold my-6"
+                className="md:text-3xl sm:text-2xl text-xl relative text-marcblue z-10 font-semibold my-6"
               >
                 {block.content}
               </h2>
@@ -61,14 +61,17 @@ export default async function ArticlePage({
             return (
               <h3
                 key={idx}
-                className="text-2xl text-marcblue relative z-10 font-medium mt-7 mb-5"
+                className="md:text-2xl sm:text-xl text-lg text-marcblue relative z-10 font-medium mt-7 mb-5"
               >
                 {block.content}
               </h3>
             );
           case 'paragraph':
             return (
-              <p key={idx} className=" z-10 text-lg relative leading-relaxed">
+              <p
+                key={idx}
+                className=" z-10 md:text-lg text-md relative leading-relaxed"
+              >
                 {block.content}
               </p>
             );
@@ -76,7 +79,7 @@ export default async function ArticlePage({
             return (
               <ul
                 key={idx}
-                className="list-disc z-10 text-lg relative list-inside mb-4 mt-1"
+                className="list-disc z-10 md:text-lg relative list-inside mb-4 mt-1"
               >
                 {block.items.map((item, i) => (
                   <li key={i}>{item}</li>

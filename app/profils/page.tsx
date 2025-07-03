@@ -108,7 +108,7 @@ export default function Page() {
               animate="visible"
               exit="hidden"
               variants={animationVariant}
-              className="bg-white  rounded-[3rem] bg-cover bg-center"
+              className="bg-white h-[300px] max-w-md mx-auto  rounded-[3rem] bg-cover bg-center"
               style={{
                 backgroundImage: profil.photoUrls[0]
                   ? `url(${profil.photoUrls[0]})`
@@ -162,7 +162,7 @@ export default function Page() {
               animate="visible"
               exit="hidden"
               variants={animationVariant}
-              className="bg-white  rounded-[3rem] bg-cover bg-center"
+              className="bg-white h-[300px]  max-w-md mx-auto rounded-[3rem] bg-cover bg-center"
               style={{
                 backgroundImage: profil.photoUrls[0]
                   ? `url(${profil.photoUrls[0]})`
@@ -210,7 +210,7 @@ export default function Page() {
               animate="visible"
               exit="hidden"
               variants={animationVariant}
-              className="bg-white  rounded-[3rem] bg-cover bg-center"
+              className="bg-white max-w-md h-[300px] mx-auto rounded-[3rem] bg-cover bg-center"
               style={{
                 backgroundImage: profil.photoUrls[0]
                   ? `url(${profil.photoUrls[0]})`
@@ -248,35 +248,36 @@ export default function Page() {
   return (
     <div>
       <div className="bg-gradient-to-b from-white to-marcblue/50 rounded-[3rem]  pt-40 pb-28 gap-20 w-full flex flex-col items-center justify-center">
-        <h1 className="text-6xl max-w-2xl text-center font-bold">
+        <h1 className="lg:text-6xl sm:text-5xl text-4xl py-4 font-extrabold z-10 bg-clip-text text-transparent bg-gradient-to-br from-black to-neutral-900 text-center max-w-3xl">
+          {' '}
           Tous nos profils
         </h1>
 
-        <div className="grid grid-cols-3 h-[100px] gap-10 z-10 w-full max-w-4xl">
+        <div className="grid grid-cols-3 h-[100px] px-2 sm:gap-10 gap-5 z-10 w-full max-w-4xl">
           <MagneticButton>
             <Button
               onClick={() => setNameProfils('players')}
-              className="bg-gradient-to-b from-marcblue to-marcblue/40 flex flex-col gap-3 font-bold shadow-xl backdrop-blur-sm w-full h-full hover:bg-blue-600/60 cursor-pointer transition-colors text-2xl text-white py-5 rounded-[3rem]"
+              className="bg-gradient-to-b from-marcblue to-marcblue/40 flex flex-col gap-3 font-bold shadow-xl backdrop-blur-sm w-full h-full hover:bg-blue-600/60 cursor-pointer transition-colors text-xs sm:text-xl text-white sm:py-5 py-2 rounded-[3rem]"
             >
-              <IconUser className="min-w-10 min-h-10" />
+              <IconUser className="sm:min-w-8 sm:min-h-8 min-w-6 min-h-6" />
               Joueurs
             </Button>
           </MagneticButton>
           <MagneticButton>
             <Button
               onClick={() => setNameProfils('entraineurs')}
-              className="bg-gradient-to-b from-marcblue to-marcblue/40 flex flex-col gap-3 font-bold shadow-xl backdrop-blur-sm w-full h-full hover:bg-blue-600/60 cursor-pointer transition-colors text-2xl text-white py-5 rounded-[3rem]"
+              className="bg-gradient-to-b from-marcblue to-marcblue/40 flex flex-col gap-3 font-bold shadow-xl backdrop-blur-sm w-full h-full hover:bg-blue-600/60 cursor-pointer text-xs transition-colors sm:text-xl text-white sm:py-5 py-2 rounded-[3rem]"
             >
-              <IconClipboardList className="min-w-10 min-h-10" />
+              <IconClipboardList className="sm:min-w-8 sm:min-h-8 min-w-6 min-h-6" />
               Entraîneurs
             </Button>
           </MagneticButton>
           <MagneticButton>
             <Button
               onClick={() => setNameProfils('preparateurs')}
-              className="bg-gradient-to-b from-marcblue to-marcblue/40 flex flex-col gap-3 font-bold shadow-xl backdrop-blur-sm w-full h-full hover:bg-blue-600/60 cursor-pointer transition-colors text-2xl text-white py-5 rounded-[3rem]"
+              className="bg-gradient-to-b text-xs from-marcblue to-marcblue/40 flex flex-col gap-3 font-bold shadow-xl backdrop-blur-sm w-full h-full hover:bg-blue-600/60 cursor-pointer transition-colors sm:text-xl text-white sm:py-5 py-2 rounded-[3rem]"
             >
-              <IconHeartRateMonitor className="min-w-10 min-h-10" />
+              <IconHeartRateMonitor className="sm:min-w-8 sm:min-h-8 min-w-6 min-h-6" />
               Préparateurs
             </Button>
           </MagneticButton>
@@ -291,7 +292,7 @@ export default function Page() {
           : 'Préparateurs'}
       </h2>
 
-      <div className="w-full max-w-5xl grid-cols-3 grid-rows-[repeat(auto-fill,_300px)] grid gap-8 mx-auto mt-16">
+      <div className="w-full max-w-5xl px-5 md:grid-cols-3 sm:grid-cols-2  grid gap-8 mx-auto mt-16">
         <Link
           className="fixed bottom-5 z-20 right-10 p-5 rounded-3xl shadow-2xl text-center bg-marcbluedark text-white"
           href={nameProfils === 'players' ? '/players/new' : '/entraineurs/new'}
