@@ -58,7 +58,7 @@ export function HeaderResponsive() {
               <DrawerClose asChild key={link.href}>
                 <Link
                   href={link.href}
-                  className="w-full text-center font-medium text-lg text-neutral-700 dark:text-neutral-300 hover:underline"
+                  className="w-full text-center font-medium text-lg text-neutral-700 dark:text-neutral-500 hover:underline"
                 >
                   {link.label}
                 </Link>

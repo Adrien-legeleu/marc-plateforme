@@ -302,7 +302,7 @@ export default function Page() {
         </div>
 
         {/* Bouton Envoyer */}
-        <div className="w-full flex  gap-10 items-center justify-center">
+        <div className="w-full flex sm:flex-row flex-col  sm:gap-10 items-center justify-center">
           <Button
             type="submit"
             className=" px-16 py-6 mt-4 text-black bg-white rounded-3xl shadow-xl"
