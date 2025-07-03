@@ -4,6 +4,11 @@ import createGlobe, { COBEOptions } from 'cobe';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { cn } from '@/lib/utils';
+interface GlobeRenderState {
+  phi: number;
+  width: number;
+  height: number;
+}
 
 const GLOBE_CONFIG: COBEOptions = {
   width: 800,
@@ -70,16 +75,19 @@ export function Globe({
     (state: Record<string, any>) => {
       if (!pointerInteracting.current) phi += 0.005;
 
-      // On cast ici pour avoir un typage fort localement
-      const typedState = state as {
+      const {
+        phi: currentPhi,
+        width: currentWidth,
+        height: currentHeight,
+      } = state as {
         phi: number;
         width: number;
         height: number;
       };
 
-      typedState.phi = phi + r;
-      typedState.width = width * 2;
-      typedState.height = width * 2;
+      state.phi = phi + r;
+      state.width = width * 2;
+      state.height = width * 2;
     },
     [r]
   );
