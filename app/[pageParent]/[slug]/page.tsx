@@ -2,8 +2,9 @@ import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 
 type Block =
-  | { type: 'h1' | 'h2' | 'paragraph'; content: string }
-  | { type: 'list'; items: string[] };
+  | { type: 'h1' | 'h2' | 'h3' | 'paragraph'; content: string }
+  | { type: 'list'; items: string[] }
+  | { type: 'table'; headers: string[]; rows: string[][] };
 
 export default async function ArticlePage({
   params,
@@ -18,12 +19,14 @@ export default async function ArticlePage({
   });
 
   if (!article) return notFound();
+
   const blocks = article.content as Block[];
+
   return (
     <div className="max-w-3xl mx-auto py-40 px-5">
       <h1 className="text-4xl font-bold mb-10">{article.title}</h1>
 
-      {blocks.map((block: any, idx: number) => {
+      {blocks.map((block, idx) => {
         switch (block.type) {
           case 'h1':
             return (
@@ -37,6 +40,12 @@ export default async function ArticlePage({
                 {block.content}
               </h2>
             );
+          case 'h3':
+            return (
+              <h3 key={idx} className="text-xl font-medium my-3">
+                {block.content}
+              </h3>
+            );
           case 'paragraph':
             return (
               <p key={idx} className="mb-4 leading-relaxed">
@@ -46,10 +55,43 @@ export default async function ArticlePage({
           case 'list':
             return (
               <ul key={idx} className="list-disc list-inside mb-4">
-                {block.items?.map((item: string, i: number) => (
+                {block.items.map((item, i) => (
                   <li key={i}>{item}</li>
                 ))}
               </ul>
+            );
+          case 'table':
+            return (
+              <div key={idx} className="overflow-x-auto mb-6">
+                <table className="w-full border-collapse border border-gray-300">
+                  <thead>
+                    <tr>
+                      {block.headers.map((header, i) => (
+                        <th
+                          key={i}
+                          className="border border-gray-300 px-4 py-2 bg-gray-100 text-left"
+                        >
+                          {header}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {block.rows.map((row, rIdx) => (
+                      <tr key={rIdx}>
+                        {row.map((cell, cIdx) => (
+                          <td
+                            key={cIdx}
+                            className="border border-gray-300 px-4 py-2"
+                          >
+                            {cell}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             );
           default:
             return null;
