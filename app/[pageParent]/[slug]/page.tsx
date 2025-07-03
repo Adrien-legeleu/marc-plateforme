@@ -1,7 +1,6 @@
 import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import { cn } from '@/lib/utils';
-import type { Metadata } from 'next';
 
 type Block =
   | { type: 'h1' | 'h2' | 'h3' | 'paragraph'; content: string }
