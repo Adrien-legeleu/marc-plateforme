@@ -19,7 +19,7 @@ export default function SectionGlobe() {
       {descriptifsGlobe.map((item, index) => (
         <div
           key={index}
-          className={`absolute ${item.position} max-lg:hidden max-w-sm z-10 space-y-2 bg-white/90 dark:bg-black/60 backdrop-blur-sm rounded-[3rem] p-6 shadow-lg`}
+          className={`absolute ${item.position} max-lg:hidden max-w-sm z-10 space-y-2 bg-white/90 backdrop-blur-sm rounded-[3rem] p-6 shadow-lg`}
         >
           <h3 className="text-xl text-center font-semibold text-[#255cbc]">
             {item.title}

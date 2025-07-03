@@ -337,7 +337,11 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({
       pageParent: pageParent,
       content,
     };
-    onSave ? onSave(data) : console.log('Saved', data);
+    if (onSave) {
+      onSave(data);
+    } else {
+      console.log('Saved', data);
+    }
   };
 
   const [title, setTitle] = useState(initialTitle);
