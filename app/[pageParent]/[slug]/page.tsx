@@ -7,12 +7,14 @@ type Block =
   | { type: 'list'; items: string[] }
   | { type: 'table'; headers: string[]; rows: string[][] };
 
-// 👇 voici la bonne signature
-export default async function ArticlePage({
-  params,
-}: {
-  params: { pageParent: string; slug: string };
-}) {
+type ArticlePageParams = {
+  params: {
+    pageParent: string;
+    slug: string;
+  };
+};
+
+export default async function Page({ params }: ArticlePageParams) {
   const article = await prisma.article.findFirst({
     where: {
       pageParent: params.pageParent,
