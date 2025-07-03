@@ -4,11 +4,6 @@ import createGlobe, { COBEOptions } from 'cobe';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { cn } from '@/lib/utils';
-interface GlobeRenderState {
-  phi: number;
-  width: number;
-  height: number;
-}
 
 const GLOBE_CONFIG: COBEOptions = {
   width: 800,
@@ -71,23 +66,20 @@ export function Globe({
       setR(delta / 200);
     }
   };
+
   const onRender = useCallback(
-    (state: Record<string, any>) => {
+    (state: Record<string, unknown>) => {
       if (!pointerInteracting.current) phi += 0.005;
 
-      const {
-        phi: currentPhi,
-        width: currentWidth,
-        height: currentHeight,
-      } = state as {
-        phi: number;
-        width: number;
-        height: number;
-      };
-
-      state.phi = phi + r;
-      state.width = width * 2;
-      state.height = width * 2;
+      if (
+        typeof state.phi === 'number' &&
+        typeof state.width === 'number' &&
+        typeof state.height === 'number'
+      ) {
+        state.phi = phi + r;
+        state.width = width * 2;
+        state.height = width * 2;
+      }
     },
     [r]
   );
