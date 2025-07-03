@@ -8,10 +8,7 @@ import { Menu, MenuItem, HoveredLink } from '../ui/navbar-menu';
 import { HeaderResponsive } from './HeaderResponsive';
 
 import {
-  IconUser,
   IconGavel,
-  IconBuildingStadium,
-  IconBooks,
   IconUsersGroup,
   IconMail,
   IconRocket,
@@ -25,7 +22,6 @@ export function Header({ className }: { className?: string }) {
   return (
     <>
       <HeaderResponsive />
-
       <div
         className={cn(
           'fixed max-lg:hidden inset-x-0 duration-500 ease-in-out flex items-center justify-center mx-auto z-[10000] top-4',
@@ -57,28 +53,6 @@ export function Header({ className }: { className?: string }) {
             <MenuItem
               setActive={setActive}
               active={active}
-              item="Agent de joueurs"
-              link="/agent"
-            >
-              <div className="flex flex-col space-y-4 text-sm">
-                <HoveredLink href="/agent/#devenir">
-                  <IconRocket stroke={2} />
-                  Devenir agent
-                </HoveredLink>
-                <HoveredLink href="/agent/#fff">
-                  <IconShieldCheck stroke={2} />
-                  Agent FFF
-                </HoveredLink>
-                <HoveredLink href="/agent/#fifa">
-                  <IconShieldCheck stroke={2} />
-                  Agent FIFA
-                </HoveredLink>
-              </div>
-            </MenuItem>
-
-            <MenuItem
-              setActive={setActive}
-              active={active}
               item="Profils"
               link="/profils"
             >
@@ -90,48 +64,31 @@ export function Header({ className }: { className?: string }) {
                 <HoveredLink href="/profils/#clubs">Clubs</HoveredLink>
               </div>
             </MenuItem>
+            <MenuItem
+              setActive={setActive}
+              active={active}
+              item="Agent de joueurs"
+              link="/agent"
+            ></MenuItem>
 
             <MenuItem
               setActive={setActive}
               active={active}
-              item="Ressources"
-              link="/ressources"
-            >
-              <div className="flex flex-col space-y-4 text-sm">
-                <HoveredLink href="/ressources/#juridiques">
-                  <IconGavel stroke={2} />
-                  Juridiques
-                </HoveredLink>
-                <HoveredLink href="/ressources/#contrats">
-                  Contrats & transferts
-                </HoveredLink>
-                <HoveredLink href="/ressources/#jurisprudence">
-                  Jurisprudence
-                </HoveredLink>
-              </div>
-            </MenuItem>
+              item="Foot amateur"
+              link="/amateur"
+            ></MenuItem>
 
+            <MenuItem
+              setActive={setActive}
+              active={active}
+              item="Foot pro"
+              link="/pro"
+            ></MenuItem>
             <MenuItem
               setActive={setActive}
               active={active}
               item="Management"
-              link="/accompagnement"
-            >
-              <div className="flex flex-col space-y-4 text-sm">
-                <HoveredLink href="/accompagnement/#joueurs">
-                  Accompagnement joueurs
-                </HoveredLink>
-                <HoveredLink href="/accompagnement/#entraineurs">
-                  Entraîneurs
-                </HoveredLink>
-              </div>
-            </MenuItem>
-
-            <MenuItem
-              setActive={setActive}
-              active={active}
-              item="Sport associatif"
-              link="/sport-associatif"
+              link="/management"
             ></MenuItem>
 
             <MenuItem
@@ -139,16 +96,7 @@ export function Header({ className }: { className?: string }) {
               active={active}
               item="Contact"
               link="/contact"
-            >
-              <div className="flex flex-col space-y-4 text-sm">
-                <HoveredLink href="/contact">
-                  <IconMail stroke={2} /> Formulaire
-                </HoveredLink>
-                <HoveredLink href="/contact/#reseaux">
-                  Réseaux sociaux
-                </HoveredLink>
-              </div>
-            </MenuItem>
+            ></MenuItem>
 
             {/* CTA principal */}
             <Button

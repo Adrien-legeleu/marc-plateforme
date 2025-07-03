@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import { NextResponse } from 'next/server';
+import { slugify } from '../route';
 
 export async function DELETE(req: Request) {
   try {
@@ -30,20 +31,36 @@ export async function PUT(
 ) {
   try {
     const body = await req.json();
+
+    let subCategoryId = null;
+
+    if (body.subCategoryName) {
+      const existing = await prisma.subCategory.findFirst({
+        where: { name: body.subCategoryName, parent: body.pageParent },
+      });
+
+      if (existing) {
+        subCategoryId = existing.id;
+      } else {
+        const created = await prisma.subCategory.create({
+          data: { name: body.subCategoryName, parent: body.pageParent },
+        });
+        subCategoryId = created.id;
+      }
+    }
+
     const article = await prisma.article.update({
+      where: { id: params.id },
       data: {
         title: body.title,
-        slug: body.slug,
+        slug: slugify(body.title),
         content: body.content,
+        pageParent: body.pageParent,
+        subCategoryId: subCategoryId,
       },
-      where: { id: params.id },
     });
-    if (!article) {
-      return new Response(JSON.stringify({ error: 'article non trouvé' }), {
-        status: 404,
-      });
-    }
-    return new Response(JSON.stringify(article), { status: 200 });
+
+    return NextResponse.json(article);
   } catch (error) {
     console.error(error);
     return new Response(
@@ -52,7 +69,6 @@ export async function PUT(
     );
   }
 }
-
 export async function GET(req: Request) {
   try {
     const url = new URL(req.url);

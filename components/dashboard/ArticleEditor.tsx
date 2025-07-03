@@ -1,7 +1,7 @@
 'use client';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
-type BlockType = 'h1' | 'h2' | 'paragraph' | 'list';
+type BlockType = 'h1' | 'h2' | 'h3' | 'paragraph' | 'list' | 'table';
 
 interface ListItem {
   id: string;
@@ -12,7 +12,7 @@ interface BlockBase {
   type: BlockType;
 }
 interface HeadingBlock extends BlockBase {
-  type: 'h1' | 'h2';
+  type: 'h1' | 'h2' | 'h3';
   content: string;
 }
 interface ParagraphBlock extends BlockBase {
@@ -23,389 +23,602 @@ interface ListBlock extends BlockBase {
   type: 'list';
   items: ListItem[];
 }
+interface TableCell {
+  id: string;
+  content: string;
+}
+interface TableRow {
+  id: string;
+  cells: TableCell[];
+}
+interface TableBlock extends BlockBase {
+  type: 'table';
+  headers: TableCell[];
+  rows: TableRow[];
+}
 // Union type for internal block state
-type BlockInternal = HeadingBlock | ParagraphBlock | ListBlock;
+type BlockInternal = HeadingBlock | ParagraphBlock | ListBlock | TableBlock;
 
 interface ArticleEditorProps {
   initialBlocks?: Array<{
     type: BlockType;
     content?: string;
     items?: string[];
+    headers?: string[];
+    rows?: string[][];
   }>;
   initialTitle?: string;
+  initialSubCategory?: string;
   initialPageParent?: string;
   onSave?: (data: {
     title: string;
+    initialSubCategory?: string;
     pageParent: string;
-    content: Array<{ type: BlockType; content?: string; items?: string[] }>;
+    content: Array<{
+      type: BlockType;
+      content?: string;
+      items?: string[];
+      headers?: string[];
+      rows?: string[][];
+    }>;
   }) => void;
 }
 
 const ArticleEditor: React.FC<ArticleEditorProps> = ({
   initialBlocks,
+  initialSubCategory,
   initialTitle = '',
-  initialPageParent = 'joueurs',
+  initialPageParent = 'agent',
   onSave,
 }) => {
-  // Refs to generate unique IDs for blocks and list items
   const nextBlockId = useRef(0);
   const nextItemId = useRef(0);
-  const generateBlockId = () => {
-    nextBlockId.current += 1;
-    return `block-${nextBlockId.current}-${Date.now()}`;
-  };
-  const generateItemId = () => {
-    nextItemId.current += 1;
-    return `item-${nextItemId.current}-${Date.now()}`;
+  const generateBlockId = () => `block-${++nextBlockId.current}-${Date.now()}`;
+  const generateItemId = () => `item-${++nextItemId.current}-${Date.now()}`;
+
+  const createEmptyTable = (): TableBlock => {
+    const id = generateBlockId();
+    const header: TableCell = { id: generateItemId(), content: '' };
+    const row: TableRow = {
+      id: generateBlockId(),
+      cells: [{ id: generateItemId(), content: '' }],
+    };
+    return { id, type: 'table', headers: [header], rows: [row] };
   };
 
-  // Initialize state with initialBlocks if provided, otherwise start with one empty H1 block
   const initialState: BlockInternal[] = initialBlocks
     ? initialBlocks.map((block) => {
-        if (block.type === 'list') {
-          // Convert initial string items to ListItem objects with unique ids
-          const itemsObj: ListItem[] = (block.items || []).map((text) => ({
+        if (block.type === 'table') {
+          const headers = (block.headers || ['']).map((text) => ({
             id: generateItemId(),
-            text: text,
+            content: text,
           }));
-          return { id: generateBlockId(), type: 'list', items: itemsObj };
-        } else {
-          return {
+          const rows = (block.rows || [['']]).map((r) => ({
             id: generateBlockId(),
-            type: block.type,
-            content: block.content || '',
-          };
+            cells: r.map((text) => ({ id: generateItemId(), content: text })),
+          }));
+          return { id: generateBlockId(), type: 'table', headers, rows };
         }
+        if (block.type === 'list') {
+          const items = (block.items || []).map((text) => ({
+            id: generateItemId(),
+            text,
+          }));
+          return { id: generateBlockId(), type: 'list', items };
+        }
+        return {
+          id: generateBlockId(),
+          type: block.type as 'h1' | 'h2' | 'h3' | 'paragraph',
+          content: block.content || '',
+        } as HeadingBlock | ParagraphBlock;
       })
-    : [{ id: generateBlockId(), type: 'h1', content: '' }];
+    : [{ id: generateBlockId(), type: 'h1', content: '' } as HeadingBlock];
 
   const [blocks, setBlocks] = useState<BlockInternal[]>(initialState);
-  const [newBlockType, setNewBlockType] = useState<BlockType>('paragraph'); // type for the next added block
+  const [newBlockType, setNewBlockType] = useState<BlockType>('paragraph');
 
-  // Add a new block of the specified type
+  // Ajout de bloc
   const handleAddBlock = (type: BlockType) => {
     const newBlock: BlockInternal =
-      type === 'list'
+      type === 'table'
+        ? createEmptyTable()
+        : type === 'list'
         ? {
             id: generateBlockId(),
             type: 'list',
             items: [{ id: generateItemId(), text: '' }],
           }
-        : { id: generateBlockId(), type: type, content: '' };
+        : ({ id: generateBlockId(), type, content: '' } as any);
     setBlocks((prev) => [...prev, newBlock]);
   };
 
-  // Remove a block by id
-  const handleRemoveBlock = (id: string) => {
-    setBlocks((prev) => prev.filter((block) => block.id !== id));
-  };
+  // Supprimer bloc
+  const handleRemoveBlock = (id: string) =>
+    setBlocks((prev) => prev.filter((b) => b.id !== id));
 
-  // Move block up in the list
+  // Déplacer bloc
   const handleMoveUp = (id: string) => {
     setBlocks((prev) => {
-      const index = prev.findIndex((b) => b.id === id);
-      if (index > 0) {
-        const newBlocks = [...prev];
-        const [moved] = newBlocks.splice(index, 1);
-        newBlocks.splice(index - 1, 0, moved);
-        return newBlocks;
+      const idx = prev.findIndex((b) => b.id === id);
+      if (idx > 0) {
+        const arr = [...prev];
+        const [m] = arr.splice(idx, 1);
+        arr.splice(idx - 1, 0, m);
+        return arr;
       }
       return prev;
     });
   };
-
-  // Move block down in the list
   const handleMoveDown = (id: string) => {
     setBlocks((prev) => {
-      const index = prev.findIndex((b) => b.id === id);
-      if (index >= 0 && index < prev.length - 1) {
-        const newBlocks = [...prev];
-        const [moved] = newBlocks.splice(index, 1);
-        newBlocks.splice(index + 1, 0, moved);
-        return newBlocks;
+      const idx = prev.findIndex((b) => b.id === id);
+      if (idx >= 0 && idx < prev.length - 1) {
+        const arr = [...prev];
+        const [m] = arr.splice(idx, 1);
+        arr.splice(idx + 1, 0, m);
+        return arr;
       }
       return prev;
     });
   };
 
-  // Change the type of an existing block (e.g., paragraph -> list)
+  // Changer type bloc
   const handleTypeChange = (id: string, newType: BlockType) => {
     setBlocks((prev) =>
-      prev.map((block) => {
-        if (block.id !== id) return block;
-        if (block.type === newType) return block; // no change
-        // If changing to a list, convert text content to first list item
-        if (newType === 'list') {
-          const initialItems: ListItem[] = [];
-          if (block.type !== 'list') {
-            const textContent = (block as HeadingBlock | ParagraphBlock)
-              .content;
-            initialItems.push({ id: generateItemId(), text: textContent });
-          }
-          return { id: block.id, type: 'list', items: initialItems };
-        }
-        // Changing from list to a text block (h1, h2 ou paragraph)
-        let textContent = '';
-        if (block.type === 'list') {
-          textContent = block.items.map((item) => item.text).join('\\n');
-        } else {
-          textContent = (block as HeadingBlock | ParagraphBlock).content;
-        }
-        return { id: block.id, type: newType, content: textContent };
+      prev.map((b) => {
+        if (b.id !== id) return b;
+        if (newType === 'table') return createEmptyTable();
+        if (newType === 'list')
+          return {
+            id,
+            type: 'list',
+            items: [{ id: generateItemId(), text: '' }],
+          };
+        const content = (b as HeadingBlock | ParagraphBlock).content || '';
+        return { id, type: newType, content } as HeadingBlock | ParagraphBlock;
       })
     );
   };
 
-  // Update text content for a heading/paragraph block
-  const handleTextChange = (id: string, newText: string) => {
+  // Texte pour H1/H2/H3/paragraph
+  const handleTextChange = (id: string, text: string) => {
     setBlocks((prev) =>
-      prev.map((block) =>
-        block.id === id && block.type !== 'list'
-          ? { ...block, content: newText }
-          : block
+      prev.map((b) =>
+        b.id === id && 'content' in b ? { ...b, content: text } : b
       )
     );
   };
 
-  // Update one item in a list block
-  const handleListItemChange = (
-    blockId: string,
-    itemIndex: number,
-    newText: string
-  ) => {
+  // Liste
+  const handleListItemChange = (bid: string, idx: number, text: string) =>
     setBlocks((prev) =>
-      prev.map((block) => {
-        if (block.id !== blockId || block.type !== 'list') return block;
-        const updatedItems = block.items.map((item, idx) =>
-          idx === itemIndex ? { ...item, text: newText } : item
-        );
-        return { ...block, items: updatedItems };
+      prev.map((b) =>
+        b.id === bid && b.type === 'list'
+          ? {
+              ...b,
+              items: b.items.map((it, i) => (i === idx ? { ...it, text } : it)),
+            }
+          : b
+      )
+    );
+  const handleAddListItem = (bid: string) =>
+    setBlocks((prev) =>
+      prev.map((b) =>
+        b.id === bid && b.type === 'list'
+          ? { ...b, items: [...b.items, { id: generateItemId(), text: '' }] }
+          : b
+      )
+    );
+  const handleRemoveListItem = (bid: string, idx: number) =>
+    setBlocks((prev) =>
+      prev.map((b) =>
+        b.id === bid && b.type === 'list'
+          ? { ...b, items: b.items.filter((_, i) => i !== idx) }
+          : b
+      )
+    );
+
+  // Tableau
+  const handleTableHeaderChange = (bid: string, col: number, text: string) =>
+    setBlocks((prev) =>
+      prev.map((b) => {
+        if (b.id !== bid || b.type !== 'table') return b;
+        const headers = [...b.headers];
+        headers[col].content = text;
+        return { ...b, headers };
       })
     );
-  };
-
-  // Add a new empty item to a list block
-  const handleAddListItem = (blockId: string) => {
+  const handleAddTableColumn = (bid: string) =>
     setBlocks((prev) =>
-      prev.map((block) => {
-        if (block.id !== blockId || block.type !== 'list') return block;
-        return {
-          ...block,
-          items: [...block.items, { id: generateItemId(), text: '' }],
-        };
+      prev.map((b) =>
+        b.id === bid && b.type === 'table'
+          ? {
+              ...b,
+              headers: [...b.headers, { id: generateItemId(), content: '' }],
+              rows: b.rows.map((r) => ({
+                ...r,
+                cells: [...r.cells, { id: generateItemId(), content: '' }],
+              })),
+            }
+          : b
+      )
+    );
+  const handleRemoveTableColumn = (bid: string, col: number) =>
+    setBlocks((prev) =>
+      prev.map((b) =>
+        b.id === bid && b.type === 'table'
+          ? {
+              ...b,
+              headers: b.headers.filter((_, i) => i !== col),
+              rows: b.rows.map((r) => ({
+                ...r,
+                cells: r.cells.filter((_, i) => i !== col),
+              })),
+            }
+          : b
+      )
+    );
+  const handleTableCellChange = (
+    bid: string,
+    ridx: number,
+    cidx: number,
+    text: string
+  ) =>
+    setBlocks((prev) =>
+      prev.map((b) => {
+        if (b.id !== bid || b.type !== 'table') return b;
+        const rows = [...b.rows];
+        rows[ridx].cells[cidx].content = text;
+        return { ...b, rows };
       })
     );
-  };
-
-  // Remove an item from a list block
-  const handleRemoveListItem = (blockId: string, itemIndex: number) => {
+  const handleAddTableRow = (bid: string) =>
     setBlocks((prev) =>
-      prev.map((block) => {
-        if (block.id !== blockId || block.type !== 'list') return block;
-        const updatedItems = block.items.filter((_, idx) => idx !== itemIndex);
-        return { ...block, items: updatedItems };
-      })
+      prev.map((b) =>
+        b.id === bid && b.type === 'table'
+          ? {
+              ...b,
+              rows: [
+                ...b.rows,
+                {
+                  id: generateBlockId(),
+                  cells: b.headers.map(() => ({
+                    id: generateItemId(),
+                    content: '',
+                  })),
+                },
+              ],
+            }
+          : b
+      )
     );
-  };
+  const handleRemoveTableRow = (bid: string, idx: number) =>
+    setBlocks((prev) =>
+      prev.map((b) =>
+        b.id === bid && b.type === 'table'
+          ? { ...b, rows: b.rows.filter((_, i) => i !== idx) }
+          : b
+      )
+    );
 
-  // Handle save: output JSON array of blocks (with only content or items strings)
+  // Sauvegarde
   const handleSave = () => {
-    const output: { type: BlockType; content?: string; items?: string[] }[] =
-      blocks.map((block) => {
-        if (block.type === 'list') {
-          return {
-            type: 'list',
-            items: block.items.map((item) => item.text),
-          } as const;
-        } else {
-          return {
-            type: block.type,
-            content: (block as HeadingBlock | ParagraphBlock).content,
-          } as const;
-        }
-      });
-
-    const finalData = {
-      title,
-      pageParent,
-      content: output,
+    const content = blocks.map((b) => {
+      if (b.type === 'table')
+        return {
+          type: 'table' as const,
+          headers: b.headers.map((h) => h.content),
+          rows: b.rows.map((r) => r.cells.map((c) => c.content)),
+        };
+      if (b.type === 'list')
+        return { type: 'list' as const, items: b.items.map((i) => i.text) };
+      return {
+        type: b.type as 'h1' | 'h2' | 'h3' | 'paragraph',
+        content: (b as any).content,
+      };
+    });
+    const data = {
+      title: title,
+      subCategoryName: newSubCategory || subCategory,
+      pageParent: pageParent,
+      content,
     };
-
-    onSave
-      ? onSave(finalData)
-      : console.log('Article final à enregistrer :', finalData);
-
-    // Par exemple, output peut ressembler à :
-    // [ { type: 'h1', content: 'Titre...' }, { type: 'paragraph', content: 'Texte...' }, { type: 'list', items: ['élément1','élément2'] } ]
+    onSave ? onSave(data) : console.log('Saved', data);
   };
 
   const [title, setTitle] = useState(initialTitle);
   const [pageParent, setPageParent] = useState(initialPageParent);
+  const [subCategories, setSubCategories] = useState<string[]>([]);
+  const [subCategory, setSubCategory] = useState('');
+  const [newSubCategory, setNewSubCategory] = useState('');
+  useEffect(() => {
+    if (!pageParent) return;
+    fetch(`/api/subcategories?parent=${pageParent}`)
+      .then((res) => res.json())
+      .then((data) => setSubCategories(data.map((s: any) => s.name)));
+  }, [pageParent]);
+  useEffect(() => {
+    console.log(subCategories, initialSubCategory);
+
+    if (
+      initialSubCategory &&
+      subCategories.includes(initialSubCategory.trim())
+    ) {
+      setSubCategory(initialSubCategory.trim());
+    } else {
+      setSubCategory('');
+    }
+  }, [initialSubCategory, subCategories]);
 
   return (
-    <div className="p-4">
-      {/* Titre de l'article */}
-      <div className="mb-4">
-        <label className="block text-sm font-medium mb-1">
-          Titre de l'article
-        </label>
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="w-full border px-3 py-2 rounded"
-          placeholder="Titre (ne s'affiche pas dans le contenu)"
-        />
-      </div>
+    <div className="px-5">
+      <div className="border shadow-xl max-w-7xl bg-white p-10 mx-auto rounded-[3rem]">
+        {/* Titre */}
+        <div className="mb-4">
+          <input
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="w-full border px-4  shadow-sm text-lg py-3 rounded-3xl"
+            placeholder="Titre (ne s'affiche pas)"
+          />
+        </div>
 
-      {/* Sélecteur de la page parent */}
-      <div className="mb-6">
-        <label className="block text-sm font-medium mb-1">Page associée</label>
-        <select
-          value={pageParent}
-          onChange={(e) => setPageParent(e.target.value)}
-          className="w-full border px-3 py-2 rounded"
-        >
-          <option value="joueurs">Joueurs</option>
-          <option value="clubs">Clubs</option>
-          <option value="entraineurs">Entraîneurs</option>
-          <option value="preparateurs">Préparateurs</option>
-          {/* Tu peux ajouter d'autres options ici */}
-        </select>
-      </div>
+        {/* Page parent */}
+        <div className="mb-6">
+          <label className="block text-sm font-medium mb-1">
+            Page associée
+          </label>
+          <select
+            value={pageParent}
+            onChange={(e) => setPageParent(e.target.value)}
+            className="w-full border px-4 shadow-sm py-3 rounded-3xl"
+          >
+            <option value="agent">Agent sportifs</option>
+            <option value="amateur">Foot Amateur</option>
+            <option value="pro">Foot Pro</option>
+            <option value="management">Management</option>
+          </select>
+        </div>
+        <div className="mb-6">
+          <label className="block text-md font-medium mb-1">
+            Sous-rubrique :
+          </label>
+          <select
+            value={subCategories}
+            onChange={(e) => setSubCategory(e.target.value)}
+            className="shadow-sm border px-4 py-3 rounded-3xl"
+          >
+            <option value="">Aucune</option>
+            {subCategories.map((scName) => (
+              <option key={scName.trim()} value={scName.trim()}>
+                {scName.trim()}
+              </option>
+            ))}
+          </select>
+          <p>ou</p>
+          <input
+            placeholder="Nouvelle sous-rubrique"
+            value={newSubCategory}
+            className=" text-md border px-4 py-3 rounded-3xl shadow-sm"
+            onChange={(e) => setNewSubCategory(e.target.value)}
+          />
+        </div>
 
-      {blocks.map((block, index) => (
-        <div key={block.id} className="mb-4 p-4 border rounded bg-gray-50">
-          {/* Sélecteur de type et boutons de contrôle du bloc */}
-          <div className="flex items-center justify-between mb-2">
-            <select
-              value={block.type}
-              onChange={(e) =>
-                handleTypeChange(block.id, e.target.value as BlockType)
-              }
-              className="border px-2 py-1 rounded"
-            >
-              <option value="h1">Titre principal (H1)</option>
-              <option value="h2">Sous-titre (H2)</option>
-              <option value="paragraph">Paragraphe</option>
-              <option value="list">Liste à puces</option>
-            </select>
-            <div className="space-x-2">
-              {index > 0 && (
-                <button
-                  type="button"
-                  onClick={() => handleMoveUp(block.id)}
-                  className="px-2 py-1 text-sm bg-gray-200 rounded"
-                >
-                  ↑
-                </button>
-              )}
-              {index < blocks.length - 1 && (
-                <button
-                  type="button"
-                  onClick={() => handleMoveDown(block.id)}
-                  className="px-2 py-1 text-sm bg-gray-200 rounded"
-                >
-                  ↓
-                </button>
-              )}
-              <button
-                type="button"
-                onClick={() => handleRemoveBlock(block.id)}
-                className="px-2 py-1 text-sm bg-red-200 rounded"
+        {/* Blocs */}
+        {blocks.map((block, idx) => (
+          <div key={block.id} className="mb-4 p-4 border rounded-3xl bg-white">
+            <div className="flex justify-between items-center mb-2">
+              <select
+                value={block.type}
+                onChange={(e) =>
+                  handleTypeChange(block.id, e.target.value as BlockType)
+                }
+                className="border px-3 py-2 rounded-3xl"
               >
-                Supprimer
-              </button>
+                <option value="h1">H1</option>
+                <option value="h2">H2</option>
+                <option value="h3">H3</option>
+                <option value="paragraph">Paragraphe</option>
+                <option value="list">Liste</option>
+                <option value="table">Tableau</option>
+              </select>
+              <div className="space-x-2">
+                {idx > 0 && (
+                  <button
+                    onClick={() => handleMoveUp(block.id)}
+                    className="px-3 py-2 bg-gray-200 rounded-3xl"
+                  >
+                    ↑
+                  </button>
+                )}
+                {idx < blocks.length - 1 && (
+                  <button
+                    onClick={() => handleMoveDown(block.id)}
+                    className="px-3 py-2 bg-gray-200 rounded-3xl"
+                  >
+                    ↓
+                  </button>
+                )}
+                <button
+                  onClick={() => handleRemoveBlock(block.id)}
+                  className="px-3 py-2 bg-red-200 rounded-3xl"
+                >
+                  ✕
+                </button>
+              </div>
             </div>
-          </div>
 
-          {/* Zone de saisie du contenu du bloc */}
-          {block.type === 'list' ? (
-            <div className="ml-6">
-              {block.items.map((item, idx) => (
-                <div key={item.id} className="flex items-center mb-2">
-                  <span className="mr-2">•</span>
+            {block.type === 'list' ? (
+              <div className="ml-6">
+                {block.items.map((it, i) => (
+                  <div key={it.id} className="flex items-center mb-2">
+                    <span className="mr-2">•</span>
+                    <input
+                      type="text"
+                      value={it.text}
+                      onChange={(e) =>
+                        handleListItemChange(block.id, i, e.target.value)
+                      }
+                      className="flex-1  border-b border-gray-400 focus:outline-none"
+                      placeholder={`Élément ${i + 1}`}
+                    />
+                    <button
+                      onClick={() => handleRemoveListItem(block.id, i)}
+                      className="ml-2 text-red-600"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+                <button
+                  onClick={() => handleAddListItem(block.id)}
+                  className="text-sm text-blue-600"
+                >
+                  + Ajouter un élément
+                </button>
+              </div>
+            ) : block.type === 'table' ? (
+              <div className="overflow-auto rounded-3xl border border-gray-300">
+                <table className="w-full border-separate border-spacing-0">
+                  <thead>
+                    <tr>
+                      {block.headers.map((h, c) => (
+                        <th key={h.id} className="border  p-2">
+                          <input
+                            type="text"
+                            value={h.content}
+                            onChange={(e) =>
+                              handleTableHeaderChange(
+                                block.id,
+                                c,
+                                e.target.value
+                              )
+                            }
+                            className="w-full px-2"
+                            placeholder={`Entête ${c + 1}`}
+                          />
+                          <button
+                            onClick={() => handleRemoveTableColumn(block.id, c)}
+                            className="text-red-600 ml-1"
+                          >
+                            ✕
+                          </button>
+                        </th>
+                      ))}
+                      <th className="p-2">
+                        <button
+                          onClick={() => handleAddTableColumn(block.id)}
+                          className="text-blue-600"
+                        >
+                          + Colonne
+                        </button>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {block.rows.map((r, ridx) => (
+                      <tr key={r.id}>
+                        {r.cells.map((c, cidx) => (
+                          <td key={c.id} className="border p-2">
+                            <input
+                              type="text"
+                              value={c.content}
+                              onChange={(e) =>
+                                handleTableCellChange(
+                                  block.id,
+                                  ridx,
+                                  cidx,
+                                  e.target.value
+                                )
+                              }
+                              className="w-full"
+                            />
+                          </td>
+                        ))}
+                        <td className="p-2">
+                          <button
+                            onClick={() => handleRemoveTableRow(block.id, ridx)}
+                            className="text-red-600"
+                          >
+                            Supprimer ligne
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                    <tr>
+                      <td colSpan={block.headers.length + 1} className="p-2">
+                        <button
+                          onClick={() => handleAddTableRow(block.id)}
+                          className="text-blue-600"
+                        >
+                          + Ajouter une ligne
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <>
+                {block.type === 'paragraph' ? (
+                  <textarea
+                    value={(block as ParagraphBlock).content}
+                    onChange={(e) => handleTextChange(block.id, e.target.value)}
+                    className="w-full border rounded-3xl px-3 py-2"
+                    rows={3}
+                    placeholder="Paragraphe..."
+                  />
+                ) : (
                   <input
                     type="text"
-                    value={item.text}
-                    onChange={(e) =>
-                      handleListItemChange(block.id, idx, e.target.value)
+                    value={(block as HeadingBlock).content}
+                    onChange={(e) => handleTextChange(block.id, e.target.value)}
+                    className="w-full border rounded-3xl px-3 py-2 text-xl font-semibold"
+                    placeholder={
+                      block.type === 'h1'
+                        ? 'Titre principal...'
+                        : block.type === 'h2'
+                        ? 'Sous-titre...'
+                        : 'Sous-sous-titre...'
                     }
-                    className="flex-1 border-b border-gray-400 focus:outline-none"
-                    placeholder={`Élément ${idx + 1}`}
                   />
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveListItem(block.id, idx)}
-                    className="ml-2 text-red-600"
-                  >
-                    ✕
-                  </button>
-                </div>
-              ))}
-              <button
-                type="button"
-                onClick={() => handleAddListItem(block.id)}
-                className="text-sm text-blue-600"
-              >
-                + Ajouter un élément
-              </button>
-            </div>
-          ) : (
-            <>
-              {block.type === 'paragraph' ? (
-                <textarea
-                  value={block.content}
-                  onChange={(e) => handleTextChange(block.id, e.target.value)}
-                  className="w-full border px-2 py-1"
-                  rows={3}
-                  placeholder="Paragraphe..."
-                />
-              ) : (
-                <input
-                  type="text"
-                  value={block.content}
-                  onChange={(e) => handleTextChange(block.id, e.target.value)}
-                  className="w-full border px-2 py-1 text-xl font-semibold"
-                  placeholder={
-                    block.type === 'h1' ? 'Titre principal...' : 'Sous-titre...'
-                  }
-                />
-              )}
-            </>
-          )}
-        </div>
-      ))}
+                )}
+              </>
+            )}
+          </div>
+        ))}
 
-      {/* Contrôles pour ajouter un nouveau bloc */}
-      <div className="mt-2">
-        <select
-          value={newBlockType}
-          onChange={(e) => setNewBlockType(e.target.value as BlockType)}
-          className="border px-2 py-1 rounded"
-        >
-          <option value="paragraph">Paragraphe</option>
-          <option value="h1">Titre principal (H1)</option>
-          <option value="h2">Sous-titre (H2)</option>
-          <option value="list">Liste à puces</option>
-        </select>
+        {/* Ajouter un bloc */}
+        <div className="mt-2">
+          <select
+            value={newBlockType}
+            onChange={(e) => setNewBlockType(e.target.value as BlockType)}
+            className="border px-3 py-2 rounded-3xl"
+          >
+            <option value="paragraph">Paragraphe</option>
+            <option value="h1">Titre principal (H1)</option>
+            <option value="h2">Sous-titre (H2)</option>
+            <option value="h3">Sous-sous-titre (H3)</option>
+            <option value="list">Liste à puces</option>
+            <option value="table">Tableau</option>
+          </select>
+          <button
+            onClick={() => handleAddBlock(newBlockType)}
+            className="ml-2 px-4 py-2 bg-blue-600 text-white rounded-3xl"
+          >
+            Ajouter un bloc
+          </button>
+        </div>
+
+        {/* Bouton Enregistrer */}
         <button
-          type="button"
-          onClick={() => handleAddBlock(newBlockType)}
-          className="ml-2 px-3 py-1 bg-blue-600 text-white rounded"
+          onClick={handleSave}
+          className="mt-4 px-5 py-3 bg-green-600 text-white rounded-3xl"
         >
-          Ajouter un bloc
+          Enregistrer
         </button>
       </div>
-
-      {/* Bouton Enregistrer */}
-      <button
-        type="button"
-        onClick={handleSave}
-        className="mt-4 px-4 py-2 bg-green-600 text-white rounded"
-      >
-        Enregistrer
-      </button>
     </div>
   );
 };

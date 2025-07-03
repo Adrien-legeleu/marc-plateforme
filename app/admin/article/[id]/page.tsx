@@ -29,6 +29,7 @@ export default function ArticleDetailPage() {
     title: string;
     pageParent: string;
     content: any[];
+    subCategoryName?: string;
   }) => {
     try {
       const res = await fetch(`/api/article/${id}`, {
@@ -61,15 +62,17 @@ export default function ArticleDetailPage() {
   if (!article) return <p className="p-10">Chargement...</p>;
 
   return (
-    <div className="max-w-4xl mx-auto py-20">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Modifier l’article</h1>
-        <button
-          onClick={handleDelete}
-          className="px-4 py-2 bg-red-600 text-white rounded"
-        >
-          Supprimer
-        </button>
+    <div className=" mx-auto py-40">
+      <div className="px-5">
+        <div className="flex justify-between items-center mb-6 max-w-7xl mx-auto">
+          <h1 className="text-3xl font-bold">Modifier l’article</h1>
+          <button
+            onClick={handleDelete}
+            className="px-5 py-3 bg-red-600 text-white rounded-3xl"
+          >
+            Supprimer
+          </button>
+        </div>
       </div>
 
       <ArticleEditor
@@ -77,6 +80,7 @@ export default function ArticleDetailPage() {
         initialTitle={article.title}
         initialPageParent={article.pageParent}
         onSave={(data) => handleUpdate(data)}
+        initialSubCategory={article.subCategory?.name || ''}
       />
     </div>
   );

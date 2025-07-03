@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+import { NextResponse } from 'next/server';
 
 export function slugify(text: string): string {
   return text
@@ -14,17 +15,43 @@ export function slugify(text: string): string {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const slug = slugify(body.title);
+    console.log('body', body);
+
+    const { title, pageParent, content, subCategoryName } = body;
+
+    let subCategoryId = null;
+
+    if (subCategoryName) {
+      const existing = await prisma.subCategory.findFirst({
+        where: { name: subCategoryName, parent: pageParent },
+      });
+
+      if (existing) {
+        subCategoryId = existing.id;
+      } else {
+        const created = await prisma.subCategory.create({
+          data: { name: subCategoryName, parent: pageParent },
+        });
+        subCategoryId = created.id;
+      }
+    }
+
+    const slug = title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)+/g, '');
 
     const article = await prisma.article.create({
       data: {
-        title: body.title,
-        content: body.content,
-        slug: slug,
-        pageParent: body.pageParent,
+        title,
+        slug,
+        pageParent,
+        subCategoryId,
+        content,
       },
     });
-    return new Response(JSON.stringify(article), { status: 200 });
+
+    return NextResponse.json(article);
   } catch (error) {
     console.error(error);
     return new Response(

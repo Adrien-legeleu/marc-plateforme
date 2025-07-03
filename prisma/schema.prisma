@@ -49,13 +49,22 @@ model Entraineur {
   createdAt      DateTime      @default(now())
 }
 
+model SubCategory {
+  id        String   @id @default(cuid())
+  name      String
+  parent    String   
+  articles  Article[]
+}
+
 
 model Article {
-  id String @id @default(cuid())
-  title String
-  content Json
-slug String
-pageParent String
-createdAt DateTime @default(now())
-updatedAt DateTime @updatedAt
+  id            String       @id @default(cuid())
+  title         String
+  content       Json
+  slug          String
+  pageParent    String
+  subCategoryId String? 
+  subCategory   SubCategory? @relation(fields: [subCategoryId], references: [id])
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
 }

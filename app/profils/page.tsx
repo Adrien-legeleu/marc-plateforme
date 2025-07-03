@@ -292,6 +292,16 @@ export default function Page() {
       </h2>
 
       <div className="w-full max-w-5xl grid-cols-3 grid-rows-[repeat(auto-fill,_300px)] grid gap-8 mx-auto mt-16">
+        <Link
+          className="fixed bottom-5 z-20 right-10 p-5 rounded-3xl shadow-2xl text-center bg-marcbluedark text-white"
+          href={nameProfils === 'players' ? '/players/new' : '/entraineurs/new'}
+        >
+          {nameProfils === 'players' && 'Déposer un profil joueur'}
+
+          {nameProfils === 'entraineurs' && 'Ajouter un profil entraîneur'}
+
+          {nameProfils === 'preparateurs' && 'Ajouter un profil préparateur'}
+        </Link>
         {renderList()}
       </div>
     </div>
