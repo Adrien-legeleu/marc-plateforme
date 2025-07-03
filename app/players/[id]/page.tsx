@@ -4,18 +4,21 @@ import React from 'react';
 
 const prisma = new PrismaClient();
 
-interface PlayerPageProps {
-  params: { id: string }; // ← doit être un objet avec .id
-}
 function getAge(dateString: Date) {
   const birthDate = new Date(dateString);
   const ageDifMs = Date.now() - birthDate.getTime();
   return Math.floor(ageDifMs / (365.25 * 24 * 60 * 60 * 1000));
 }
 
-export default async function PlayerPage({ params }: PlayerPageProps) {
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+
   const player = await prisma.joueur.findUnique({
-    where: { id: Number(params.id) }, // id est un nombre
+    where: { id: Number(id) },
   });
 
   if (!player) {
