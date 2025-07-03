@@ -45,7 +45,7 @@ export default function SectionGlobe() {
         ))}
       </div>
 
-      <div className="z-10 flex md:gap-10 gap-5 relative top-20 lg:top-48 flex-wrap justify-center">
+      <div className="z-10 flex md:gap-10 gap-5 relative top-28 lg:top-48 flex-wrap justify-center">
         <MagneticButton>
           <Button className="bg-gradient-to-b from-white to-white/80 capitalize shadow-xl backdrop-blur-sm hover:bg-white/60 cursor-pointer transition-colors text-lg text-black p-6 rounded-[3rem]">
             Comprendre notre mission

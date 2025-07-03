@@ -129,3 +129,19 @@ body {
     font-family: var(--font-title), sans-serif;
   }
 }
+@keyframes shiny-text {
+  0%,
+  90%,
+  100% {
+    background-position: calc(-100% - var(--shiny-width, 100px)) 0;
+  }
+  30%,
+  60% {
+    background-position: calc(100% + var(--shiny-width, 100px)) 0;
+  }
+}
+
+/* Optionnel mais parfois utile */
+.animate-shiny-text {
+  animation: shiny-text 8s infinite;
+}
