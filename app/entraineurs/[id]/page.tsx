@@ -4,13 +4,14 @@ import React from 'react';
 
 const prisma = new PrismaClient();
 
-interface EntraineurPageProps {
-  params: { id: string };
-}
-
-export default async function EntraineurPage({ params }: EntraineurPageProps) {
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params; // on récupère l'id, PAS pageParent ou slug !
   const coach = await prisma.entraineur.findUnique({
-    where: { id: Number(params.id) },
+    where: { id: Number(id) },
   });
 
   if (!coach) {
