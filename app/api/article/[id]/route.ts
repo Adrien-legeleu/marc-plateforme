@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/prisma';
+import { slugify } from '@/lib/slugify';
 import { NextResponse } from 'next/server';
-import { slugify } from '../route';
 
 export async function DELETE(req: Request) {
   try {
