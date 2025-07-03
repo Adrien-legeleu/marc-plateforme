@@ -15,6 +15,15 @@ import MobilitySelector from '@/app/components/Form/MobilitySelector';
 import NiveauActuelSelector from '@/app/components/Form/ActualLevel';
 import { Label } from '@/components/ui/label';
 
+interface FileItem {
+  file: File;
+  preview?: string;
+  // ajoute d'autres propriétés si besoin
+}
+
+interface UploadState {
+  files: FileItem[];
+}
 export default function Page() {
   const [formData, setFormData] = useState({
     name: '',
@@ -72,7 +81,9 @@ export default function Page() {
     maxFiles,
   });
 
-  const handleFileSubmit = async (uploadState: any) => {
+  const handleFileSubmit = async (
+    uploadState: UploadState
+  ): Promise<string[]> => {
     const urls: string[] = [];
     for (const fileItem of uploadState.files) {
       const formDataBlob = new FormData();

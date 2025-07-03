@@ -1,10 +1,6 @@
 import { prisma } from '@/lib/prisma';
-import { NextRequest } from 'next/server';
 
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET({ params }: { params: { id: string } }) {
   try {
     const entraineur = await prisma.entraineur.findUnique({
       where: { id: parseInt(params.id) },
@@ -15,7 +11,7 @@ export async function GET(
       });
     }
     return Response.json(entraineur);
-  } catch (error) {
+  } catch {
     return new Response(JSON.stringify({ error: 'erreur serveur' }), {
       status: 500,
     });

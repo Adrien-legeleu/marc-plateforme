@@ -54,7 +54,7 @@ export async function POST(req: Request) {
         firstName,
         email,
         telephone,
-        // @ts-ignore: If bornDateValue is undefined and bornDate is required, Prisma will throw – we handle in catch
+        // @ts-expect-error: If bornDateValue is undefined and bornDate is required, Prisma will throw – we handle in catch
         bornDate: bornDateValue,
         position: position ?? [], // assure un tableau (vide si aucune valeur)
         strongFoot: strongFoot || null, // stocker null au lieu de chaîne vide si non fourni

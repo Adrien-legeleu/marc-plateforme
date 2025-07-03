@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Button } from '../ui/button';
-import { Menu, MenuItem, HoveredLink } from '../ui/navbar-menu';
+import { Menu, MenuItem } from '../ui/navbar-menu';
 import { HeaderResponsive } from './HeaderResponsive';
 
 export function Header({ className }: { className?: string }) {

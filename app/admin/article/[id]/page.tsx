@@ -4,10 +4,27 @@ import { useParams, useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import ArticleEditor from '@/components/dashboard/ArticleEditor';
 
+type RawBlock = {
+  type: 'h1' | 'h2' | 'h3' | 'paragraph' | 'list' | 'table';
+  content?: string;
+  items?: string[];
+  headers?: string[];
+  rows?: string[][];
+};
+type Article = {
+  id: string;
+  title: string;
+  pageParent: string;
+  content: RawBlock[];
+  subCategory?: {
+    name: string;
+  };
+};
+
 export default function ArticleDetailPage() {
   const { id } = useParams();
   const router = useRouter();
-  const [article, setArticle] = useState<any | null>(null);
+  const [article, setArticle] = useState<Article | null>(null);
 
   const fetchArticle = async () => {
     console.log(id);
@@ -28,7 +45,7 @@ export default function ArticleDetailPage() {
   const handleUpdate = async (data: {
     title: string;
     pageParent: string;
-    content: any[];
+    content: RawBlock[];
     subCategoryName?: string;
   }) => {
     try {

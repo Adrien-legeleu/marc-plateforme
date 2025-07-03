@@ -1,7 +1,6 @@
 'use client';
 import { Button } from '@/components/ui/button';
 import React from 'react';
-import { MagneticButton } from '@/components/ui/magnetic-button';
 import { AnimatedShinyText } from '@/components/magicui/animated-shiny-text';
 import Image from 'next/image';
 

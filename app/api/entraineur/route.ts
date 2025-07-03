@@ -35,7 +35,7 @@ export async function POST(req: Request) {
       },
     });
     return Response.json(entraineur);
-  } catch (error) {
+  } catch {
     return new Response(
       JSON.stringify({ error: "Erreur lors de la création de l'entraineur" }),
       { status: 500 }
@@ -47,7 +47,7 @@ export async function GET() {
   try {
     const entraineurs = await prisma.entraineur.findMany();
     return Response.json(entraineurs);
-  } catch (error) {
+  } catch {
     return new Response(
       JSON.stringify({
         error: 'Erreur lors de la récupération des entraineurs',

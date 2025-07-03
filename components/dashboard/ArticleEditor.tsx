@@ -11,6 +11,12 @@ interface BlockBase {
   id: string;
   type: BlockType;
 }
+interface SubCategory {
+  id: string;
+  name: string;
+  parent: string;
+}
+
 interface HeadingBlock extends BlockBase {
   type: 'h1' | 'h2' | 'h3';
   content: string;
@@ -119,16 +125,24 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({
 
   // Ajout de bloc
   const handleAddBlock = (type: BlockType) => {
-    const newBlock: BlockInternal =
-      type === 'table'
-        ? createEmptyTable()
-        : type === 'list'
-        ? {
-            id: generateBlockId(),
-            type: 'list',
-            items: [{ id: generateItemId(), text: '' }],
-          }
-        : ({ id: generateBlockId(), type, content: '' } as any);
+    let newBlock: BlockInternal;
+
+    if (type === 'table') {
+      newBlock = createEmptyTable();
+    } else if (type === 'list') {
+      newBlock = {
+        id: generateBlockId(),
+        type: 'list',
+        items: [{ id: generateItemId(), text: '' }],
+      };
+    } else {
+      newBlock = {
+        id: generateBlockId(),
+        type,
+        content: '',
+      } as HeadingBlock | ParagraphBlock;
+    }
+
     setBlocks((prev) => [...prev, newBlock]);
   };
 
@@ -314,7 +328,7 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({
         return { type: 'list' as const, items: b.items.map((i) => i.text) };
       return {
         type: b.type as 'h1' | 'h2' | 'h3' | 'paragraph',
-        content: (b as any).content,
+        content: b.content,
       };
     });
     const data = {
@@ -335,7 +349,9 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({
     if (!pageParent) return;
     fetch(`/api/subcategories?parent=${pageParent}`)
       .then((res) => res.json())
-      .then((data) => setSubCategories(data.map((s: any) => s.name)));
+      .then((data: SubCategory[]) => {
+        setSubCategories(data.map((s) => s.name));
+      });
   }, [pageParent]);
   useEffect(() => {
     console.log(subCategories, initialSubCategory);

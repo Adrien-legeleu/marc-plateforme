@@ -35,7 +35,12 @@ export default function Page() {
   const maxSize = maxSizeMB * 1024 * 1024;
   const maxFiles = 6;
 
-  const handleFormData = (key: string, value: any) => {
+  type FormDataKey = keyof typeof formData;
+
+  const handleFormData = <K extends FormDataKey>(
+    key: string,
+    value: (typeof formData)[K]
+  ) => {
     console.log(formData);
 
     setFormData((prev) => ({
@@ -58,8 +63,15 @@ export default function Page() {
     multiple: false,
     maxFiles: 1,
   });
+  interface FileItem {
+    file: File;
+  }
 
-  const handleFileSubmit = async (uploadState: any) => {
+  interface UploadState {
+    files: FileItem[];
+  }
+
+  const handleFileSubmit = async (uploadState: UploadState) => {
     const urls: string[] = [];
     for (const fileItem of uploadState.files) {
       const formDataBlob = new FormData();
