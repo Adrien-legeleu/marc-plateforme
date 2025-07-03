@@ -37,18 +37,7 @@ export function Header({ className }: { className?: string }) {
               active={active}
               item="Accueil"
               link="/"
-            >
-              <div className="flex flex-col space-y-4 text-sm">
-                <HoveredLink href="/#mission">
-                  <IconInfoSquare stroke={2} />
-                  La mission
-                </HoveredLink>
-                <HoveredLink href="/#reseau">
-                  <IconUsersGroup stroke={2} />
-                  Le réseau
-                </HoveredLink>
-              </div>
-            </MenuItem>
+            ></MenuItem>
 
             <MenuItem
               setActive={setActive}
@@ -56,13 +45,13 @@ export function Header({ className }: { className?: string }) {
               item="Profils"
               link="/profils"
             >
-              <div className="flex flex-col space-y-4 text-sm">
+              {/* <div className="flex flex-col space-y-4 text-sm">
                 <HoveredLink href="/profils/#joueurs">Joueurs</HoveredLink>
                 <HoveredLink href="/profils/#entraineurs">
                   Entraîneurs
                 </HoveredLink>
                 <HoveredLink href="/profils/#clubs">Clubs</HoveredLink>
-              </div>
+              </div> */}
             </MenuItem>
             <MenuItem
               setActive={setActive}

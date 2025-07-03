@@ -4,6 +4,7 @@ import './globals.css';
 import { Header } from '@/components/header/Header';
 import { Antonio } from 'next/font/google';
 import { Toaster } from '@/components/ui/sonner';
+import Footer from '@/components/footer/Footer';
 
 export const antonio = Antonio({
   subsets: ['latin'],
@@ -29,6 +30,9 @@ export default function RootLayout({
         </header>
         <main>{children}</main>
         <Toaster />
+        <footer>
+          <Footer />
+        </footer>
       </body>
     </html>
   );
