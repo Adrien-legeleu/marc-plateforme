@@ -294,7 +294,7 @@ export default function Page() {
 
       <div className="w-full max-w-5xl px-5 md:grid-cols-3 sm:grid-cols-2 relative  grid gap-8 mx-auto mt-16">
         <Link
-          className="fixed lg:bottom-5 top-5 z-20 lg:right-10 right-5 p-5 max-sm:text-sm rounded-3xl shadow-2xl text-center bg-marcbluedark text-white"
+          className="fixed lg:bottom-5 max-lg:top-5 z-20 lg:right-10 right-5 p-5 max-sm:text-sm rounded-3xl shadow-2xl text-center bg-marcbluedark text-white"
           href={nameProfils === 'players' ? '/players/new' : '/entraineurs/new'}
         >
           {nameProfils === 'players' && 'Déposer un profil joueur'}
