@@ -6,20 +6,20 @@ import Image from 'next/image';
 
 export default function SectionPremium() {
   return (
-    <div className="w-full relative max-w-6xl max-xl:px-10 h-full  mx-auto px-6 md:px-10  flex flex-col justify-center items-center gap-8 text-center ">
+    <div className="w-full  relative max-w-6xl max-xl:px-10 h-full  mx-auto px-6 md:px-10  flex flex-col justify-center items-center gap-8 text-center ">
       <Image
         src={'/young-man-playing-football (1).jpg'}
         alt="jeune homme qui joue au foot"
         width={500}
         height={500}
-        className="lg:w-56 w-40  lg:h-full   h-2/3  rounded-[3rem] z-0 shadow-xl object-right object-cover absolute top-0 max-lg:-translate-y-full  lg:left-0 left-1/2 max-lg:-translate-x-1/2 "
+        className="lg:w-56 w-40  max-lg:hidden lg:h-full   h-2/3  rounded-[3rem] z-0 shadow-xl object-right object-cover absolute top-0 max-lg:-translate-y-full  lg:left-0 left-1/2 max-lg:-translate-x-1/2 "
       />
       <Image
         src={'/freepik__upload__77451.jpeg'}
         alt="jeune homme qui joue au foot"
         width={500}
         height={500}
-        className="lg:w-56 w-40  lg:h-full  h-2/3 rounded-[3rem] z-0 shadow-xl object-right object-cover absolute lg:top-0 top-full translate-y-2 lg:right-0 right-1/2 max-lg:translate-x-1/2 "
+        className="lg:w-56 w-40  lg:h-full max-lg:hidden h-2/3 rounded-[3rem] z-0 shadow-xl object-right object-cover absolute lg:top-0 top-full translate-y-2 lg:right-0 right-1/2 max-lg:translate-x-1/2 "
       />
       <AnimatedShinyText className="inline-flex z-10 items-center justify-center px-4 py-1 transition ease-out hover:text-blue-600 hover:duration-300 ">
         <span className="sm:text-4xl text-3xl md:text-6xl font-extrabold ">
