@@ -8,14 +8,14 @@ type Block =
   | { type: 'table'; headers: string[]; rows: string[][] };
 
 type ArticlePageParams = {
-  params: Promise<{
+  params: {
     pageParent: string;
     slug: string;
-  }>;
+  };
 };
 
 export default async function Page({ params }: ArticlePageParams) {
-  const { pageParent, slug } = await params;
+  const { pageParent, slug } = params;
 
   const article = await prisma.article.findFirst({
     where: {
