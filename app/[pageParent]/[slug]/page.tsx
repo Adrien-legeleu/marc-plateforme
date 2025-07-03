@@ -1,20 +1,19 @@
 import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import { cn } from '@/lib/utils';
-
-type Props = {
-  params: {
-    pageParent: string;
-    slug: string;
-  };
-};
+import type { Metadata } from 'next';
 
 type Block =
   | { type: 'h1' | 'h2' | 'h3' | 'paragraph'; content: string }
   | { type: 'list'; items: string[] }
   | { type: 'table'; headers: string[]; rows: string[][] };
 
-export default async function ArticlePage({ params }: Props) {
+// 👇 voici la bonne signature
+export default async function ArticlePage({
+  params,
+}: {
+  params: { pageParent: string; slug: string };
+}) {
   const article = await prisma.article.findFirst({
     where: {
       pageParent: params.pageParent,
