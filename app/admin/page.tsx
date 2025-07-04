@@ -6,7 +6,6 @@ import {
 } from '@tabler/icons-react';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
-import { formatDate } from '../[pageParent]/page';
 
 type Article = {
   id: string;
@@ -30,9 +29,20 @@ export default function Page() {
   const [allArticles, setAllArticles] = useState<Article[]>([]);
   const [filteredArticles, setFilteredArticles] = useState<Article[]>([]);
   const [selectedPageParent, setSelectedPageParent] = useState('');
-  const [subcategoriesMap, setSubcategoriesMap] = useState<{
-    [id: string]: string;
-  }>({});
+
+  function formatDate(dateStr: Date | string | undefined) {
+    if (!dateStr) return '';
+    try {
+      const date = dateStr instanceof Date ? dateStr : new Date(dateStr);
+      return date.toLocaleDateString('fr-FR', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+      });
+    } catch {
+      return '';
+    }
+  }
 
   const getData = async () => {
     try {
@@ -58,9 +68,6 @@ export default function Page() {
           }
         }
       }
-      console.log(subCatIdToName);
-
-      setSubcategoriesMap(subCatIdToName);
     } catch (error) {
       console.error('Erreur lors de la récupération des articles:', error);
     }
