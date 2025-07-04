@@ -77,7 +77,7 @@ export default function Page() {
   return (
     <div className="px-5">
       <div className="py-40 relative  max-w-7xl mx-auto">
-        <div className="fixed bg-marcbluedark rounded-3xl p-5 shadow-2xl lg:bottom-20 lg:right-20 top-5 right-5">
+        <div className="fixed bg-marcbluedark rounded-3xl p-5 shadow-2xl lg:bottom-20 lg:right-20 max-lg:top-5 right-5">
           <Link
             href={'/admin/new'}
             className="flex gap-2 font-semibold text-lg text-white items-center justify-center"
