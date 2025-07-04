@@ -1,4 +1,3 @@
-// app/[pageParent]/[slug]/page.tsx
 import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import { cn } from '@/lib/utils';
@@ -9,22 +8,15 @@ type Block =
   | { type: 'table'; headers: string[]; rows: string[][] };
 
 interface PageProps {
-  params: {
-    pageParent: string;
-    slug: string;
-  };
+  params: Promise<{ pageParent: string; slug: string }>; // **Important**
 }
 
 export default async function Page({ params }: PageProps) {
-  const { pageParent, slug } = params;
+  const { pageParent, slug } = await params; // attendre le promise
 
   const article = await prisma.article.findFirst({
-    where: {
-      pageParent,
-      slug,
-    },
+    where: { pageParent, slug },
   });
-
   if (!article) return notFound();
 
   const blocks = article.content as Block[];
