@@ -1,11 +1,11 @@
 import { prisma } from '@/lib/prisma';
 import { NextRequest } from 'next/server';
 
-// Typage explicite pour params attendu
-type Params = { id: string };
-
-export async function PUT(req: NextRequest, context: { params: Params }) {
-  const { id } = context.params;
+export async function PUT(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  const { id } = params;
   const { direction }: { direction: 'up' | 'down' } = await req.json();
 
   // Type Article Prisma si tu veux plus strict encore
