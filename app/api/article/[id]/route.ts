@@ -80,6 +80,9 @@ export async function GET(req: Request) {
 
     const article = await prisma.article.findUnique({
       where: { id: id },
+      include: {
+        subCategory: true, // ou { select: { name: true, id: true } }
+      },
     });
     if (!article) {
       return new Response(JSON.stringify({ error: 'article non trouvé' }), {

@@ -4,21 +4,12 @@ import { useParams, useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import ArticleEditor from '@/components/dashboard/ArticleEditor';
 
-type RawBlock = {
-  type: 'h1' | 'h2' | 'h3' | 'paragraph' | 'list' | 'table';
-  content?: string;
-  items?: string[];
-  headers?: string[];
-  rows?: string[][];
-};
 type Article = {
   id: string;
   title: string;
   pageParent: string;
-  content: RawBlock[];
-  subCategory?: {
-    name: string;
-  };
+  content: string; // HTML
+  subCategory?: { name: string };
 };
 
 export default function ArticleDetailPage() {
@@ -26,27 +17,27 @@ export default function ArticleDetailPage() {
   const router = useRouter();
   const [article, setArticle] = useState<Article | null>(null);
 
-  const fetchArticle = async () => {
-    console.log(id);
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch(`/api/article/${id}`);
+        if (!res.ok) throw new Error('Erreur de chargement');
+        const json = await res.json();
+        console.log(json);
 
-    try {
-      const res = await fetch(`/api/article/${id}`);
-      if (!res.ok) throw new Error('Erreur de chargement');
-      const json = await res.json();
-      console.log(json);
-
-      setArticle(json);
-    } catch (err) {
-      console.error(err);
-      toast.error('Impossible de charger l’article.');
-    }
-  };
+        setArticle(json);
+      } catch (err) {
+        console.error(err);
+        toast.error('Impossible de charger l’article.');
+      }
+    })();
+  }, [id]);
 
   const handleUpdate = async (data: {
     title: string;
     pageParent: string;
-    content: RawBlock[];
-    subCategoryName?: string;
+    subCategoryName: string;
+    content: string;
   }) => {
     try {
       const res = await fetch(`/api/article/${id}`, {
@@ -72,14 +63,10 @@ export default function ArticleDetailPage() {
     }
   };
 
-  useEffect(() => {
-    fetchArticle();
-  }, []);
-
   if (!article) return <p className="p-10">Chargement...</p>;
 
   return (
-    <div className=" mx-auto py-40">
+    <div className="mx-auto py-40">
       <div className="px-5">
         <div className="flex justify-between items-center mb-6 max-w-7xl mx-auto">
           <h1 className="text-3xl font-bold">Modifier l’article</h1>
@@ -91,13 +78,12 @@ export default function ArticleDetailPage() {
           </button>
         </div>
       </div>
-
       <ArticleEditor
-        initialBlocks={article.content}
         initialTitle={article.title}
+        initialContent={article.content}
         initialPageParent={article.pageParent}
-        onSave={(data) => handleUpdate(data)}
         initialSubCategory={article.subCategory?.name || ''}
+        onSave={handleUpdate}
       />
     </div>
   );

@@ -1,7 +1,12 @@
 'use client';
-import { IconNewSection } from '@tabler/icons-react';
+import {
+  IconChevronRight,
+  IconFileText,
+  IconNewSection,
+} from '@tabler/icons-react';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
+import { formatDate } from '../[pageParent]/page';
 
 type Article = {
   id: string;
@@ -10,6 +15,7 @@ type Article = {
   pageParent: string;
   subCategory?: string;
   subCategoryId: string;
+  createdAt: Date;
 };
 
 const pageParentOptions = [
@@ -112,25 +118,23 @@ export default function Page() {
         <ul className="gap-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {filteredArticles.map((article) => (
             <Link
-              href={`/admin/article/${article.id}`}
               key={article.id}
-              className="p-5 border rounded-[3rem] shadow-sm bg-white flex flex-col gap-5 transition hover:shadow-md"
+              href={`/admin/article/${article.id}`}
+              className="group relative bg-white rounded-[3rem] border border-marcblue/10 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all p-8 min-h-[190px] flex flex-col"
             >
-              <h3 className="font-semibold text-2xl text-center">
-                {article.title}
-              </h3>
-
-              <div className="flex flex-col items-center gap-2">
-                {subcategoriesMap[article.subCategoryId] && (
-                  <p className="text-md bg-marcblue rounded-full px-3 py-1 text-white">
-                    {subcategoriesMap[article.subCategoryId]}
-                  </p>
-                )}
-
-                <p className="text-sm bg-marcblue rounded-full px-3 py-1 text-white">
-                  /{article.pageParent}/{article.slug}
-                </p>
+              <div className="flex items-center gap-3 mb-4">
+                <span className="block w-2 h-8 bg-gradient-to-b from-marcblue/80 to-marcblue/20 rounded-full"></span>
+                <IconFileText className="text-marcblue" size={24} />
               </div>
+              <h2 className="text-xl font-bold mb-2 text-marcbluedark group-hover:text-marcblue transition-colors">
+                {article.title}
+              </h2>
+              <div className="text-sm text-gray-400 mb-3">
+                {formatDate(article.createdAt)}
+              </div>
+              <span className="flex items-center gap-2 mt-auto text-marcblue font-semibold group-hover:translate-x-2 transition">
+                Modifier l&apos;article <IconChevronRight size={18} />
+              </span>
             </Link>
           ))}
         </ul>

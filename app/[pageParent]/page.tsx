@@ -2,7 +2,19 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
 import { IconFileText, IconChevronRight } from '@tabler/icons-react';
-
+export function formatDate(dateStr: Date | string | undefined) {
+  if (!dateStr) return '';
+  try {
+    const date = dateStr instanceof Date ? dateStr : new Date(dateStr);
+    return date.toLocaleDateString('fr-FR', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
+    });
+  } catch {
+    return '';
+  }
+}
 export default async function Page(props: {
   params: Promise<{ pageParent: string; slug: string }>;
 }) {
@@ -19,20 +31,6 @@ export default async function Page(props: {
   });
 
   if (!articles.length) return notFound();
-
-  function formatDate(dateStr: Date | string | undefined) {
-    if (!dateStr) return '';
-    try {
-      const date = dateStr instanceof Date ? dateStr : new Date(dateStr);
-      return date.toLocaleDateString('fr-FR', {
-        day: '2-digit',
-        month: 'long',
-        year: 'numeric',
-      });
-    } catch {
-      return '';
-    }
-  }
 
   const articlesSansSousCat = articles.filter((a) => !a.subCategoryId);
   const articlesParSousCat: { [key: string]: typeof articles } = {};
