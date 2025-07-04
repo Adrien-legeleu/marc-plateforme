@@ -31,7 +31,7 @@ export default async function Page({ params }: PageProps) {
         )}
       />
       <div className="pointer-events-none absolute inset-0 z-0 flex items-center justify-center bg-white dark:bg-black [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
-      <h1 className="md:text-5xl sm:text-4xl text-3xl text-center text-marcbluedark z-10 font-bold mb-16">
+      <h1 className="md:text-5xl sm:text-4xl text-3xl text-center text-marcbluedark z-10 relative font-bold mb-16">
         {article.title}
       </h1>
 
