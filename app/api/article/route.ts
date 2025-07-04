@@ -27,7 +27,12 @@ export async function POST(req: Request) {
     }
 
     const slug = slugify(title);
-
+    const maxOrder = await prisma.article.aggregate({
+      where: { pageParent },
+      _max: { order: true },
+    });
+    const order = (maxOrder._max.order ?? 0) + 1;
+    console.log({ title, pageParent, content, subCategoryName, order });
     const article = await prisma.article.create({
       data: {
         title,
@@ -35,6 +40,7 @@ export async function POST(req: Request) {
         pageParent,
         subCategoryId,
         content,
+        order,
       },
     });
 
@@ -49,7 +55,9 @@ export async function POST(req: Request) {
 }
 export async function GET() {
   try {
-    const articles = await prisma.article.findMany();
+    const articles = await prisma.article.findMany({
+      orderBy: { order: 'asc' },
+    });
     return new Response(JSON.stringify(articles), { status: 200 });
   } catch (error) {
     console.error(error);

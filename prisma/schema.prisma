@@ -64,6 +64,7 @@ model Article {
   slug          String
   pageParent    String
   subCategoryId String? 
+  order        Int      @default(0)
   subCategory   SubCategory? @relation(fields: [subCategoryId], references: [id])
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt

@@ -14,7 +14,8 @@ type Article = {
   pageParent: string;
   subCategory?: string;
   subCategoryId: string;
-  createdAt: Date;
+  createdAt: Date | string;
+  order: number;
 };
 
 const pageParentOptions = [
@@ -48,7 +49,8 @@ export default function Page() {
     try {
       const response = await fetch('/api/article');
       if (!response.ok) throw new Error('Échec de la requête');
-      const json = await response.json();
+      const json: Article[] = await response.json();
+      json.sort((a, b) => a.order - b.order);
       console.log(json);
 
       setAllArticles(json);
@@ -86,6 +88,19 @@ export default function Page() {
       );
     }
   }, [selectedPageParent, allArticles]);
+  async function moveArticleOrder({
+    articleId,
+    direction,
+  }: {
+    articleId: string;
+    direction: 'up' | 'down';
+  }) {
+    await fetch(`/api/article/${articleId}/order`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ direction }),
+    });
+  }
 
   return (
     <div className="px-5">
@@ -120,29 +135,63 @@ export default function Page() {
             </button>
           ))}
         </div>
+        <ul className="gap-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 relative lg:grid-cols-4">
+          {filteredArticles.map((article, idx) => (
+            <li key={article.id} className="relative flex flex-col">
+              {selectedPageParent !== '' && (
+                <div className="absolute right-4  top-4 flex z-10 flex-col gap-1">
+                  <button
+                    disabled={idx === 0}
+                    onClick={async (e) => {
+                      e.stopPropagation();
+                      await moveArticleOrder({
+                        articleId: article.id,
+                        direction: 'up',
+                      });
+                      await getData();
+                    }}
+                    className="px-2 py-1 bg-gray-200 rounded-full disabled:opacity-50"
+                    title="Monter"
+                  >
+                    ↑
+                  </button>
+                  <button
+                    disabled={idx === filteredArticles.length - 1}
+                    onClick={async (e) => {
+                      e.stopPropagation();
+                      await moveArticleOrder({
+                        articleId: article.id,
+                        direction: 'down',
+                      });
+                      await getData();
+                    }}
+                    className="px-2 py-1 bg-gray-200 rounded-full disabled:opacity-50"
+                    title="Descendre"
+                  >
+                    ↓
+                  </button>
+                </div>
+              )}
 
-        {/* Grille des articles */}
-        <ul className="gap-5 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {filteredArticles.map((article) => (
-            <Link
-              key={article.id}
-              href={`/admin/article/${article.id}`}
-              className="group relative bg-white rounded-[3rem] border border-marcblue/10 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all p-8 min-h-[190px] flex flex-col"
-            >
-              <div className="flex items-center gap-3 mb-4">
-                <span className="block w-2 h-8 bg-gradient-to-b from-marcblue/80 to-marcblue/20 rounded-full"></span>
-                <IconFileText className="text-marcblue" size={24} />
-              </div>
-              <h2 className="text-xl font-bold mb-2 text-marcbluedark group-hover:text-marcblue transition-colors">
-                {article.title}
-              </h2>
-              <div className="text-sm text-gray-400 mb-3">
-                {formatDate(article.createdAt)}
-              </div>
-              <span className="flex items-center gap-2 mt-auto text-marcblue font-semibold group-hover:translate-x-2 transition">
-                Modifier l&apos;article <IconChevronRight size={18} />
-              </span>
-            </Link>
+              <Link
+                href={`/admin/article/${article.id}`}
+                className="group relative bg-white rounded-[3rem] border border-marcblue/10 shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all p-8 min-h-[190px] flex flex-col"
+              >
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="block w-2 h-8 bg-gradient-to-b from-marcblue/80 to-marcblue/20 rounded-full"></span>
+                  <IconFileText className="text-marcblue" size={24} />
+                </div>
+                <h2 className="text-xl font-bold mb-2 text-marcbluedark group-hover:text-marcblue transition-colors">
+                  {article.title}
+                </h2>
+                <div className="text-sm text-gray-400 mb-3">
+                  {formatDate(article.createdAt)}
+                </div>
+                <span className="flex items-center gap-2 mt-auto text-marcblue font-semibold group-hover:translate-x-2 transition">
+                  Modifier l&apos;article <IconChevronRight size={18} />
+                </span>
+              </Link>
+            </li>
           ))}
         </ul>
       </div>

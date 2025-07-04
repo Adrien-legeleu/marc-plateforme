@@ -10,7 +10,7 @@ export default async function Page(props: {
 
   const articles = await prisma.article.findMany({
     where: { pageParent },
-    orderBy: { createdAt: 'desc' },
+    orderBy: [{ order: 'asc' }],
   });
 
   const subCategories = await prisma.subCategory.findMany({
