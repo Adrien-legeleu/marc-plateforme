@@ -12,10 +12,10 @@ export default async function Page(props: {
   console.log(articles);
 
   if (articles.length === 0) return notFound();
-  function formatDate(dateStr: string | undefined) {
+  function formatDate(dateStr: Date | string | undefined) {
     if (!dateStr) return '';
     try {
-      const date = new Date(dateStr);
+      const date = dateStr instanceof Date ? dateStr : new Date(dateStr);
       return date.toLocaleDateString('fr-FR', {
         day: '2-digit',
         month: 'long',
@@ -28,9 +28,17 @@ export default async function Page(props: {
 
   return (
     <div className="py-40 max-w-6xl mx-auto px-5">
-      <h1 className="text-5xl text-center mb-20 font-black capitalize tracking-tight text-marcblue">
-        {pageParent}
-      </h1>
+      <div className="mb-20 max-w-3xl mx-auto space-y-4">
+        <h1 className="text-5xl text-center font-black capitalize tracking-tight text-marcblue">
+          {pageParent}
+        </h1>
+        <p className="text-lg text-center">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Dolorem nemo
+          accusantium quasi rerum possimus cum error, minus optio, consequuntur
+          ab nisi corporis dolorum recusandae asperiores impedit voluptate?
+          Quia, natus sequi? Quaerat, repudiandae!
+        </p>
+      </div>
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-12">
         {articles.map((article) => (
           <Link
