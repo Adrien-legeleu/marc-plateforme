@@ -204,7 +204,7 @@ export default function ArticleEditor({
         <button
           type="button"
           onClick={() =>
-            editor?.chain().focus().toggleHeading({ level: 2 }).run()
+            editor?.chain().focus().toggleHeading({ level: 3 }).run()
           }
           className={cn(
             'btn',
@@ -217,7 +217,7 @@ export default function ArticleEditor({
         <button
           type="button"
           onClick={() =>
-            editor?.chain().focus().toggleHeading({ level: 2 }).run()
+            editor?.chain().focus().toggleHeading({ level: 4 }).run()
           }
           className={cn(
             'btn',
